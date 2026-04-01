@@ -266,6 +266,16 @@ body {
   background: #f0e0e0;
 }
 
+.toolbar .btn-export {
+  margin-left: auto;
+}
+
+.toolbar .btn-export:hover {
+  background: #4a7cc9;
+  color: #fff;
+  border-color: #4a7cc9;
+}
+
 /* Form */
 .plan-form {
   flex: 1;
@@ -570,4 +580,68 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a0adb8;
+}
+
+/* Print / PDF export */
+@media print {
+  body {
+    background: #fff;
+    overflow: visible;
+    height: auto;
+  }
+
+  .layout {
+    display: block;
+    height: auto;
+  }
+
+  .sidebar,
+  .sidebar-expand-btn,
+  .toolbar,
+  .btn-remove,
+  .btn-add,
+  .btn-add-findout,
+  #btn-add-decision {
+    display: none !important;
+  }
+
+  .main {
+    overflow: visible;
+    background: #fff;
+  }
+
+  .plan-form {
+    overflow: visible;
+    padding: 0;
+  }
+
+  .form-section {
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .meta-section {
+    background: #f5f8fc;
+  }
+
+  .form-row input,
+  .form-row textarea,
+  .form-row select,
+  .checklist-item textarea,
+  .list-item textarea,
+  .findout-item textarea,
+  .findout-item .findout-plan,
+  .decision-table td textarea {
+    border: none;
+    background: transparent;
+    padding-left: 0;
+  }
+
+  .plan-form.readonly input,
+  .plan-form.readonly textarea,
+  .plan-form.readonly select {
+    opacity: 1;
+  }
 }

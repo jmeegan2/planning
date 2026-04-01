@@ -46,6 +46,7 @@ const formEl = document.getElementById("plan-form") as HTMLFormElement;
 const btnNew = document.getElementById("btn-new") as HTMLButtonElement;
 const btnEdit = document.getElementById("btn-edit") as HTMLButtonElement;
 const btnDelete = document.getElementById("btn-delete") as HTMLButtonElement;
+const btnExport = document.getElementById("btn-export") as HTMLButtonElement;
 const sidebarEl = document.getElementById("sidebar") as HTMLElement;
 const btnCollapse = document.getElementById("btn-toggle-sidebar") as HTMLButtonElement;
 const btnExpand = document.getElementById("btn-expand-sidebar") as HTMLButtonElement;
@@ -56,6 +57,11 @@ btnCollapse.addEventListener("click", () => {
 });
 btnExpand.addEventListener("click", () => {
   sidebarEl.classList.remove("collapsed");
+});
+
+// Export PDF
+btnExport.addEventListener("click", () => {
+  window.print();
 });
 
 // Load plans from localStorage

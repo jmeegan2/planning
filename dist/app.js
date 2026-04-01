@@ -9,6 +9,7 @@ const formEl = document.getElementById("plan-form");
 const btnNew = document.getElementById("btn-new");
 const btnEdit = document.getElementById("btn-edit");
 const btnDelete = document.getElementById("btn-delete");
+const btnExport = document.getElementById("btn-export");
 const sidebarEl = document.getElementById("sidebar");
 const btnCollapse = document.getElementById("btn-toggle-sidebar");
 const btnExpand = document.getElementById("btn-expand-sidebar");
@@ -18,6 +19,10 @@ btnCollapse.addEventListener("click", () => {
 });
 btnExpand.addEventListener("click", () => {
     sidebarEl.classList.remove("collapsed");
+});
+// Export PDF
+btnExport.addEventListener("click", () => {
+    window.print();
 });
 // Load plans from localStorage
 function loadPlans() {
