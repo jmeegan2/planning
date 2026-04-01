@@ -376,8 +376,8 @@ body {
   flex-shrink: 0;
 }
 
-.checklist-item input[type="text"],
-.list-item input[type="text"] {
+.checklist-item textarea,
+.list-item textarea {
   flex: 1;
   padding: 6px 10px;
   background: #fff;
@@ -386,10 +386,13 @@ body {
   color: #2c2c2c;
   font-size: 13px;
   font-family: "IBM Plex Sans", sans-serif;
+  resize: none;
+  overflow: hidden;
+  min-height: 32px;
 }
 
-.checklist-item input[type="text"]:focus,
-.list-item input[type="text"]:focus {
+.checklist-item textarea:focus,
+.list-item textarea:focus {
   outline: none;
   border-color: #4a7cc9;
 }
@@ -405,7 +408,7 @@ body {
   flex-shrink: 0;
 }
 
-.findout-item input[type="text"] {
+.findout-item textarea {
   flex: 1;
   min-width: 150px;
   padding: 6px 10px;
@@ -415,9 +418,12 @@ body {
   color: #2c2c2c;
   font-size: 13px;
   font-family: "IBM Plex Sans", sans-serif;
+  resize: none;
+  overflow: hidden;
+  min-height: 32px;
 }
 
-.findout-item input[type="text"]:focus {
+.findout-item textarea:focus {
   outline: none;
   border-color: #4a7cc9;
 }
@@ -433,6 +439,9 @@ body {
   color: #6b7a8d;
   font-size: 12px;
   font-family: "IBM Plex Mono", monospace;
+  resize: none;
+  overflow: hidden;
+  min-height: 32px;
 }
 
 .findout-item .findout-plan:focus {
@@ -502,7 +511,7 @@ body {
   padding: 4px;
 }
 
-.decision-table td input {
+.decision-table td textarea {
   width: 100%;
   padding: 6px 8px;
   background: #fff;
@@ -511,9 +520,12 @@ body {
   color: #2c2c2c;
   font-size: 13px;
   font-family: "IBM Plex Sans", sans-serif;
+  resize: none;
+  overflow: hidden;
+  min-height: 32px;
 }
 
-.decision-table td input:focus {
+.decision-table td textarea:focus {
   outline: none;
   border-color: #4a7cc9;
 }

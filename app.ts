@@ -96,6 +96,19 @@ function escapeHtml(s: string): string {
   return div.innerHTML;
 }
 
+// Auto-resize textarea helper
+function autoResize(ta: HTMLTextAreaElement): void {
+  ta.style.height = "auto";
+  ta.style.height = ta.scrollHeight + "px";
+}
+
+function makeAutoResizing(ta: HTMLTextAreaElement): void {
+  ta.rows = 1;
+  ta.addEventListener("input", () => autoResize(ta));
+  // Resize on next frame in case value was set before append
+  requestAnimationFrame(() => autoResize(ta));
+}
+
 // Checklist helpers
 function addChecklistItem(containerId: string, text = "", checked = false): void {
   const container = document.getElementById(containerId)!;
@@ -103,17 +116,19 @@ function addChecklistItem(containerId: string, text = "", checked = false): void
   div.className = "checklist-item";
   div.innerHTML = `
     <input type="checkbox" ${checked ? "checked" : ""}>
-    <input type="text" value="${escapeAttr(text)}" placeholder="Enter item...">
+    <textarea placeholder="Enter item...">${escapeHtml(text)}</textarea>
     <button type="button" class="btn-remove" title="Remove">&times;</button>
   `;
   div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
-  div.querySelector("input[type='text']")!.addEventListener("keydown", (e) => {
-    if ((e as KeyboardEvent).key === "Enter") {
+  const ta = div.querySelector("textarea") as HTMLTextAreaElement;
+  makeAutoResizing(ta);
+  ta.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       addChecklistItem(containerId);
       const items = container.querySelectorAll(".checklist-item");
       const last = items[items.length - 1];
-      (last.querySelector("input[type='text']") as HTMLInputElement).focus();
+      (last.querySelector("textarea") as HTMLTextAreaElement).focus();
     }
   });
   container.appendChild(div);
@@ -124,17 +139,19 @@ function addListItem(containerId: string, text = ""): void {
   const div = document.createElement("div");
   div.className = "list-item";
   div.innerHTML = `
-    <input type="text" value="${escapeAttr(text)}" placeholder="Enter item...">
+    <textarea placeholder="Enter item...">${escapeHtml(text)}</textarea>
     <button type="button" class="btn-remove" title="Remove">&times;</button>
   `;
   div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
-  div.querySelector("input[type='text']")!.addEventListener("keydown", (e) => {
-    if ((e as KeyboardEvent).key === "Enter") {
+  const ta = div.querySelector("textarea") as HTMLTextAreaElement;
+  makeAutoResizing(ta);
+  ta.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       addListItem(containerId);
       const items = container.querySelectorAll(".list-item");
       const last = items[items.length - 1];
-      (last.querySelector("input[type='text']") as HTMLInputElement).focus();
+      (last.querySelector("textarea") as HTMLTextAreaElement).focus();
     }
   });
   container.appendChild(div);
@@ -146,19 +163,20 @@ function addFindOutItem(containerId: string, unknown = "", plan = "", checked = 
   div.className = "findout-item";
   div.innerHTML = `
     <input type="checkbox" ${checked ? "checked" : ""}>
-    <input type="text" value="${escapeAttr(unknown)}" placeholder="Unknown...">
+    <textarea placeholder="Unknown...">${escapeHtml(unknown)}</textarea>
     <button type="button" class="btn-remove" title="Remove">&times;</button>
-    <input type="text" class="findout-plan" value="${escapeAttr(plan)}" placeholder="Plan: read docs / ask someone / spike...">
+    <textarea class="findout-plan" placeholder="Plan: read docs / ask someone / spike...">${escapeHtml(plan)}</textarea>
   `;
   div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
-  const textInputs = div.querySelectorAll("input[type='text']");
-  textInputs[textInputs.length - 1].addEventListener("keydown", (e) => {
-    if ((e as KeyboardEvent).key === "Enter") {
+  div.querySelectorAll("textarea").forEach(ta => makeAutoResizing(ta));
+  const textareas = div.querySelectorAll("textarea");
+  textareas[textareas.length - 1].addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       addFindOutItem(containerId);
       const items = container.querySelectorAll(".findout-item");
       const last = items[items.length - 1];
-      (last.querySelector("input[type='text']") as HTMLInputElement).focus();
+      (last.querySelector("textarea") as HTMLTextAreaElement).focus();
     }
   });
   container.appendChild(div);
@@ -168,20 +186,21 @@ function addDecisionRow(date = "", decision = "", reasoning = ""): void {
   const tbody = document.getElementById("decision-rows") as HTMLTableSectionElement;
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><input type="text" value="${escapeAttr(date)}" placeholder="MM/DD"></td>
-    <td><input type="text" value="${escapeAttr(decision)}" placeholder="Decision"></td>
-    <td><input type="text" value="${escapeAttr(reasoning)}" placeholder="Reasoning"></td>
+    <td><textarea class="decision-date" placeholder="MM/DD">${escapeHtml(date)}</textarea></td>
+    <td><textarea class="decision-text" placeholder="Decision">${escapeHtml(decision)}</textarea></td>
+    <td><textarea class="decision-text" placeholder="Reasoning">${escapeHtml(reasoning)}</textarea></td>
     <td><button type="button" class="btn-remove" title="Remove">&times;</button></td>
   `;
   tr.querySelector(".btn-remove")!.addEventListener("click", () => tr.remove());
-  const inputs = tr.querySelectorAll("input");
-  inputs[inputs.length - 1].addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
+  tr.querySelectorAll("textarea").forEach(ta => makeAutoResizing(ta));
+  const textareas = tr.querySelectorAll("textarea");
+  textareas[textareas.length - 1].addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       addDecisionRow();
       const rows = tbody.querySelectorAll("tr");
       const last = rows[rows.length - 1];
-      (last.querySelector("input") as HTMLInputElement).focus();
+      (last.querySelector("textarea") as HTMLTextAreaElement).focus();
     }
   });
   tbody.appendChild(tr);
@@ -201,21 +220,22 @@ function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
   const doneItems: ChecklistItem[] = [];
   document.querySelectorAll("#done-items .checklist-item").forEach(el => {
     doneItems.push({
-      text: (el.querySelector("input[type='text']") as HTMLInputElement).value,
+      text: (el.querySelector("textarea") as HTMLTextAreaElement).value,
       checked: (el.querySelector("input[type='checkbox']") as HTMLInputElement).checked,
     });
   });
 
   const knowItems: string[] = [];
   document.querySelectorAll("#know-items .list-item").forEach(el => {
-    knowItems.push((el.querySelector("input[type='text']") as HTMLInputElement).value);
+    knowItems.push((el.querySelector("textarea") as HTMLTextAreaElement).value);
   });
 
   const findOutItems: FindOutItem[] = [];
   document.querySelectorAll("#find-out-items .findout-item").forEach(el => {
+    const textareas = el.querySelectorAll("textarea");
     findOutItems.push({
-      unknown: (el.querySelector("input[type='text']") as HTMLInputElement).value,
-      plan: (el.querySelector(".findout-plan") as HTMLInputElement).value,
+      unknown: textareas[0].value,
+      plan: textareas[1].value,
       checked: (el.querySelector("input[type='checkbox']") as HTMLInputElement).checked,
     });
   });
@@ -223,23 +243,23 @@ function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
   const chunkItems: ChecklistItem[] = [];
   document.querySelectorAll("#chunk-items .checklist-item").forEach(el => {
     chunkItems.push({
-      text: (el.querySelector("input[type='text']") as HTMLInputElement).value,
+      text: (el.querySelector("textarea") as HTMLTextAreaElement).value,
       checked: (el.querySelector("input[type='checkbox']") as HTMLInputElement).checked,
     });
   });
 
   const riskItems: string[] = [];
   document.querySelectorAll("#risk-items .list-item").forEach(el => {
-    riskItems.push((el.querySelector("input[type='text']") as HTMLInputElement).value);
+    riskItems.push((el.querySelector("textarea") as HTMLTextAreaElement).value);
   });
 
   const decisions: DecisionRow[] = [];
   document.querySelectorAll("#decision-rows tr").forEach(tr => {
-    const inputs = tr.querySelectorAll("input");
+    const textareas = tr.querySelectorAll("textarea");
     decisions.push({
-      date: inputs[0].value,
-      decision: inputs[1].value,
-      reasoning: inputs[2].value,
+      date: textareas[0].value,
+      decision: textareas[1].value,
+      reasoning: textareas[2].value,
     });
   });
 
