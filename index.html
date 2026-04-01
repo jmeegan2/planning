@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Planner</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <button id="btn-toggle-sidebar" class="sidebar-collapse-btn" data-tooltip="Collapse">&#9666;</button>
+        <h2>Plans</h2>
+        <button id="btn-new" title="New Plan">+ New</button>
+      </div>
+      <ul id="plan-list" class="plan-list"></ul>
+    </aside>
+    <button id="btn-expand-sidebar" class="sidebar-expand-btn" data-tooltip="Expand">&#9656;</button>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="toolbar">
+        <button id="btn-edit">Edit</button>
+        <button id="btn-delete" class="btn-danger">Delete</button>
+      </div>
+
+      <form id="plan-form" class="plan-form">
+        <!-- Title & Meta -->
+        <div class="form-section meta-section">
+          <div class="form-row">
+            <label for="title">Title</label>
+            <input type="text" id="title" placeholder="Task plan title" required>
+          </div>
+          <div class="form-row">
+            <label for="ticket">Ticket/Issue</label>
+            <input type="text" id="ticket" placeholder="Link to ticket or issue">
+          </div>
+          <div class="form-row-inline">
+            <div class="form-row">
+              <label for="date-started">Date Started</label>
+              <input type="text" id="date-started" placeholder="MM/DD">
+            </div>
+            <div class="form-row">
+              <label for="context-bucket">Context Bucket</label>
+              <select id="context-bucket">
+                <option value="frontend">frontend</option>
+                <option value="infra/devops">infra/devops</option>
+                <option value="data/geo">data/geo</option>
+                <option value="other">other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. Done criteria -->
+        <div class="form-section">
+          <h3>1. What does "done" look like?</h3>
+          <div id="done-items" class="checklist-group"></div>
+          <button type="button" class="btn-add" data-target="done-items">+ Add item</button>
+        </div>
+
+        <!-- 2. What do I already know? -->
+        <div class="form-section">
+          <h3>2. What do I already know?</h3>
+          <div id="know-items" class="list-group"></div>
+          <button type="button" class="btn-add" data-target="know-items">+ Add item</button>
+        </div>
+
+        <!-- 3. What do I need to find out? -->
+        <div class="form-section">
+          <h3>3. What do I need to find out?</h3>
+          <div id="find-out-items" class="findout-group"></div>
+          <button type="button" class="btn-add-findout" data-target="find-out-items">+ Add item</button>
+        </div>
+
+        <!-- 4. Chunks -->
+        <div class="form-section">
+          <h3>4. Chunks (2-4 hrs each)</h3>
+          <div id="chunk-items" class="checklist-group"></div>
+          <button type="button" class="btn-add" data-target="chunk-items">+ Add item</button>
+        </div>
+
+        <!-- 5. Risks & Blockers -->
+        <div class="form-section">
+          <h3>5. Risks & Blockers</h3>
+          <div id="risk-items" class="list-group"></div>
+          <button type="button" class="btn-add" data-target="risk-items">+ Add item</button>
+        </div>
+
+        <!-- 6. Decision Log -->
+        <div class="form-section">
+          <h3>6. Decision Log</h3>
+          <table class="decision-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Decision</th>
+                <th>Reasoning</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="decision-rows"></tbody>
+          </table>
+          <button type="button" id="btn-add-decision">+ Add row</button>
+        </div>
+
+        <!-- 7. Wrap-up -->
+        <div class="form-section">
+          <h3>7. Wrap-up</h3>
+          <div class="form-row">
+            <label for="actual-time">Actual time vs estimate</label>
+            <input type="text" id="actual-time" placeholder="e.g. 6hrs estimated, 8hrs actual">
+          </div>
+          <div class="form-row">
+            <label for="surprised">What surprised me</label>
+            <textarea id="surprised" rows="2" placeholder="What was unexpected?"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="differently">What I'd do differently</label>
+            <textarea id="differently" rows="2" placeholder="Lessons learned"></textarea>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script src="dist/app.js"></script>
+</body>
+</html>
