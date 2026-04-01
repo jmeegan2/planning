@@ -1,5 +1,7 @@
 # Task Planner
 
+**Live site:** https://jmeegan2.github.io/planning/
+
 A lightweight task planning tool built with vanilla TypeScript, HTML, and CSS. Designed around a structured template for breaking down engineering work into manageable chunks.
 
 ## Features

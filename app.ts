@@ -107,6 +107,15 @@ function addChecklistItem(containerId: string, text = "", checked = false): void
     <button type="button" class="btn-remove" title="Remove">&times;</button>
   `;
   div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
+  div.querySelector("input[type='text']")!.addEventListener("keydown", (e) => {
+    if ((e as KeyboardEvent).key === "Enter") {
+      e.preventDefault();
+      addChecklistItem(containerId);
+      const items = container.querySelectorAll(".checklist-item");
+      const last = items[items.length - 1];
+      (last.querySelector("input[type='text']") as HTMLInputElement).focus();
+    }
+  });
   container.appendChild(div);
 }
 
@@ -119,6 +128,15 @@ function addListItem(containerId: string, text = ""): void {
     <button type="button" class="btn-remove" title="Remove">&times;</button>
   `;
   div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
+  div.querySelector("input[type='text']")!.addEventListener("keydown", (e) => {
+    if ((e as KeyboardEvent).key === "Enter") {
+      e.preventDefault();
+      addListItem(containerId);
+      const items = container.querySelectorAll(".list-item");
+      const last = items[items.length - 1];
+      (last.querySelector("input[type='text']") as HTMLInputElement).focus();
+    }
+  });
   container.appendChild(div);
 }
 
@@ -133,6 +151,16 @@ function addFindOutItem(containerId: string, unknown = "", plan = "", checked = 
     <input type="text" class="findout-plan" value="${escapeAttr(plan)}" placeholder="Plan: read docs / ask someone / spike...">
   `;
   div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
+  const textInputs = div.querySelectorAll("input[type='text']");
+  textInputs[textInputs.length - 1].addEventListener("keydown", (e) => {
+    if ((e as KeyboardEvent).key === "Enter") {
+      e.preventDefault();
+      addFindOutItem(containerId);
+      const items = container.querySelectorAll(".findout-item");
+      const last = items[items.length - 1];
+      (last.querySelector("input[type='text']") as HTMLInputElement).focus();
+    }
+  });
   container.appendChild(div);
 }
 
@@ -146,6 +174,16 @@ function addDecisionRow(date = "", decision = "", reasoning = ""): void {
     <td><button type="button" class="btn-remove" title="Remove">&times;</button></td>
   `;
   tr.querySelector(".btn-remove")!.addEventListener("click", () => tr.remove());
+  const inputs = tr.querySelectorAll("input");
+  inputs[inputs.length - 1].addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addDecisionRow();
+      const rows = tbody.querySelectorAll("tr");
+      const last = rows[rows.length - 1];
+      (last.querySelector("input") as HTMLInputElement).focus();
+    }
+  });
   tbody.appendChild(tr);
 }
 
