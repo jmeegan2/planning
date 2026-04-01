@@ -130,7 +130,7 @@ function addChecklistItem(containerId: string, text = "", checked = false): void
     <textarea placeholder="Enter item...">${escapeHtml(text)}</textarea>
     <button type="button" class="btn-remove" title="Remove">&times;</button>
   `;
-  div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
+  div.querySelector(".btn-remove")!.addEventListener("click", () => { div.remove(); scheduleAutoSave(); });
   const cb = div.querySelector("input[type='checkbox']") as HTMLInputElement;
   cb.addEventListener("change", () => {
     div.classList.toggle("checked", cb.checked);
@@ -157,7 +157,7 @@ function addListItem(containerId: string, text = ""): void {
     <textarea placeholder="Enter item...">${escapeHtml(text)}</textarea>
     <button type="button" class="btn-remove" title="Remove">&times;</button>
   `;
-  div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
+  div.querySelector(".btn-remove")!.addEventListener("click", () => { div.remove(); scheduleAutoSave(); });
   const ta = div.querySelector("textarea") as HTMLTextAreaElement;
   makeAutoResizing(ta);
   ta.addEventListener("keydown", (e) => {
@@ -182,7 +182,7 @@ function addFindOutItem(containerId: string, unknown = "", plan = "", checked = 
     <button type="button" class="btn-remove" title="Remove">&times;</button>
     <textarea class="findout-plan" placeholder="Plan: read docs / ask someone / spike...">${escapeHtml(plan)}</textarea>
   `;
-  div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
+  div.querySelector(".btn-remove")!.addEventListener("click", () => { div.remove(); scheduleAutoSave(); });
   const cb = div.querySelector("input[type='checkbox']") as HTMLInputElement;
   cb.addEventListener("change", () => {
     div.classList.toggle("checked", cb.checked);
@@ -210,7 +210,7 @@ function addDecisionRow(date = "", decision = "", reasoning = ""): void {
     <td><textarea class="decision-text" placeholder="Reasoning">${escapeHtml(reasoning)}</textarea></td>
     <td><button type="button" class="btn-remove" title="Remove">&times;</button></td>
   `;
-  tr.querySelector(".btn-remove")!.addEventListener("click", () => tr.remove());
+  tr.querySelector(".btn-remove")!.addEventListener("click", () => { tr.remove(); scheduleAutoSave(); });
   const dateTA = tr.querySelector(".decision-date") as HTMLTextAreaElement;
   tr.querySelector(".btn-today")!.addEventListener("click", () => {
     const now = new Date();
