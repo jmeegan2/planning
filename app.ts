@@ -105,9 +105,13 @@ function autoResize(ta: HTMLTextAreaElement): void {
 function makeAutoResizing(ta: HTMLTextAreaElement): void {
   ta.rows = 1;
   ta.addEventListener("input", () => autoResize(ta));
-  // Resize on next frame in case value was set before append
   requestAnimationFrame(() => autoResize(ta));
 }
+
+// Recalculate all textareas on window resize
+window.addEventListener("resize", () => {
+  document.querySelectorAll<HTMLTextAreaElement>(".plan-form textarea").forEach(autoResize);
+});
 
 // Checklist helpers
 function addChecklistItem(containerId: string, text = "", checked = false): void {

@@ -60,9 +60,12 @@ function autoResize(ta) {
 function makeAutoResizing(ta) {
     ta.rows = 1;
     ta.addEventListener("input", () => autoResize(ta));
-    // Resize on next frame in case value was set before append
     requestAnimationFrame(() => autoResize(ta));
 }
+// Recalculate all textareas on window resize
+window.addEventListener("resize", () => {
+    document.querySelectorAll(".plan-form textarea").forEach(autoResize);
+});
 // Checklist helpers
 function addChecklistItem(containerId, text = "", checked = false) {
     const container = document.getElementById(containerId);
