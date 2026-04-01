@@ -26,6 +26,7 @@ interface TaskPlan {
   findOutItems: FindOutItem[];
   chunkItems: ChecklistItem[];
   riskItems: string[];
+  images: string[];
   decisions: DecisionRow[];
   actualTime: string;
   surprised: string;
@@ -123,13 +124,17 @@ window.addEventListener("resize", () => {
 function addChecklistItem(containerId: string, text = "", checked = false): void {
   const container = document.getElementById(containerId)!;
   const div = document.createElement("div");
-  div.className = "checklist-item";
+  div.className = "checklist-item" + (checked ? " checked" : "");
   div.innerHTML = `
     <input type="checkbox" ${checked ? "checked" : ""}>
     <textarea placeholder="Enter item...">${escapeHtml(text)}</textarea>
     <button type="button" class="btn-remove" title="Remove">&times;</button>
   `;
   div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
+  const cb = div.querySelector("input[type='checkbox']") as HTMLInputElement;
+  cb.addEventListener("change", () => {
+    div.classList.toggle("checked", cb.checked);
+  });
   const ta = div.querySelector("textarea") as HTMLTextAreaElement;
   makeAutoResizing(ta);
   ta.addEventListener("keydown", (e) => {
@@ -170,7 +175,7 @@ function addListItem(containerId: string, text = ""): void {
 function addFindOutItem(containerId: string, unknown = "", plan = "", checked = false): void {
   const container = document.getElementById(containerId)!;
   const div = document.createElement("div");
-  div.className = "findout-item";
+  div.className = "findout-item" + (checked ? " checked" : "");
   div.innerHTML = `
     <input type="checkbox" ${checked ? "checked" : ""}>
     <textarea placeholder="Unknown...">${escapeHtml(unknown)}</textarea>
@@ -178,6 +183,10 @@ function addFindOutItem(containerId: string, unknown = "", plan = "", checked = 
     <textarea class="findout-plan" placeholder="Plan: read docs / ask someone / spike...">${escapeHtml(plan)}</textarea>
   `;
   div.querySelector(".btn-remove")!.addEventListener("click", () => div.remove());
+  const cb = div.querySelector("input[type='checkbox']") as HTMLInputElement;
+  cb.addEventListener("change", () => {
+    div.classList.toggle("checked", cb.checked);
+  });
   div.querySelectorAll("textarea").forEach(ta => makeAutoResizing(ta));
   const textareas = div.querySelectorAll("textarea");
   textareas[textareas.length - 1].addEventListener("keydown", (e) => {
@@ -221,6 +230,90 @@ function addDecisionRow(date = "", decision = "", reasoning = ""): void {
     }
   });
   tbody.appendChild(tr);
+}
+
+// Image handling
+const imageDropZone = document.getElementById("image-drop") as HTMLDivElement;
+const imageInput = document.getElementById("image-input") as HTMLInputElement;
+const imageGallery = document.getElementById("image-gallery") as HTMLDivElement;
+
+function resizeImage(file: File, maxWidth: number): Promise<string> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let w = img.width;
+        let h = img.height;
+        if (w > maxWidth) {
+          h = Math.round((h * maxWidth) / w);
+          w = maxWidth;
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/jpeg", 0.92));
+      };
+      img.src = e.target!.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function addImageToGallery(dataUrl: string): void {
+  const wrapper = document.createElement("div");
+  wrapper.className = "image-item";
+  wrapper.innerHTML = `
+    <img src="${dataUrl}">
+    <button type="button" class="btn-remove-img" title="Remove">&times;</button>
+  `;
+  wrapper.querySelector(".btn-remove-img")!.addEventListener("click", () => {
+    wrapper.remove();
+    scheduleAutoSave();
+  });
+  imageGallery.appendChild(wrapper);
+}
+
+async function handleFiles(files: FileList): Promise<void> {
+  for (let i = 0; i < files.length; i++) {
+    if (!files[i].type.startsWith("image/")) continue;
+    const dataUrl = await resizeImage(files[i], 1600);
+    addImageToGallery(dataUrl);
+  }
+  scheduleAutoSave();
+}
+
+imageDropZone.addEventListener("click", () => imageInput.click());
+imageInput.addEventListener("change", () => {
+  if (imageInput.files) handleFiles(imageInput.files);
+  imageInput.value = "";
+});
+imageDropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  imageDropZone.classList.add("dragover");
+});
+imageDropZone.addEventListener("dragleave", () => {
+  imageDropZone.classList.remove("dragover");
+});
+imageDropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  imageDropZone.classList.remove("dragover");
+  if (e.dataTransfer?.files) handleFiles(e.dataTransfer.files);
+});
+
+function getImages(): string[] {
+  const imgs: string[] = [];
+  imageGallery.querySelectorAll(".image-item img").forEach(img => {
+    imgs.push((img as HTMLImageElement).src);
+  });
+  return imgs;
+}
+
+function renderImages(images: string[]): void {
+  imageGallery.innerHTML = "";
+  for (const src of images) addImageToGallery(src);
 }
 
 function escapeAttr(s: string): string {
@@ -284,7 +377,9 @@ function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
   const surprised = (document.getElementById("surprised") as HTMLTextAreaElement).value;
   const differently = (document.getElementById("differently") as HTMLTextAreaElement).value;
 
-  return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, riskItems, decisions, actualTime, surprised, differently };
+  const images = getImages();
+
+  return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, riskItems, images, decisions, actualTime, surprised, differently };
 }
 
 // Populate form from a plan
@@ -307,6 +402,7 @@ function populateForm(plan: TaskPlan): void {
   for (const item of plan.findOutItems) addFindOutItem("find-out-items", item.unknown, item.plan, item.checked);
   for (const item of plan.chunkItems) addChecklistItem("chunk-items", item.text, item.checked);
   for (const item of plan.riskItems) addListItem("risk-items", item);
+  renderImages(plan.images || []);
   for (const d of plan.decisions) addDecisionRow(d.date, d.decision, d.reasoning);
 
   (document.getElementById("actual-time") as HTMLInputElement).value = plan.actualTime;
@@ -325,6 +421,7 @@ function clearForm(): void {
   document.getElementById("chunk-items")!.innerHTML = "";
   document.getElementById("risk-items")!.innerHTML = "";
   document.getElementById("decision-rows")!.innerHTML = "";
+  imageGallery.innerHTML = "";
   (document.getElementById("actual-time") as HTMLInputElement).value = "";
   (document.getElementById("surprised") as HTMLTextAreaElement).value = "";
   (document.getElementById("differently") as HTMLTextAreaElement).value = "";

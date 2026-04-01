@@ -409,6 +409,16 @@ body {
   border-color: #4a7cc9;
 }
 
+.checklist-item.checked,
+.findout-item.checked {
+  opacity: 0.5;
+}
+
+.checklist-item.checked textarea,
+.findout-item.checked textarea {
+  text-decoration: line-through;
+}
+
 .findout-item {
   flex-wrap: wrap;
 }
@@ -588,6 +598,76 @@ body {
   border-color: #4a7cc9;
 }
 
+/* Images */
+.image-drop-zone {
+  border: 2px dashed #d0d7e2;
+  border-radius: 2px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  color: #6b7a8d;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.image-drop-zone:hover,
+.image-drop-zone.dragover {
+  border-color: #4a7cc9;
+  background: #e8f0fa;
+}
+
+.plan-form.readonly .image-drop-zone {
+  display: none;
+}
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.image-item {
+  position: relative;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid #d0d7e2;
+}
+
+.image-item img {
+  display: block;
+  max-width: 200px;
+  max-height: 150px;
+  object-fit: cover;
+}
+
+.btn-remove-img {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d0d7e2;
+  border-radius: 2px;
+  color: #b04040;
+  cursor: pointer;
+  font-size: 14px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-remove-img:hover {
+  background: #f0e0e0;
+}
+
+.plan-form.readonly .btn-remove-img {
+  display: none;
+}
+
 /* Empty state */
 .empty-state {
   display: flex;
@@ -650,7 +730,9 @@ body {
   .btn-add,
   .btn-add-findout,
   #btn-add-decision,
-  .btn-today {
+  .btn-today,
+  .image-drop-zone,
+  .btn-remove-img {
     display: none !important;
   }
 
