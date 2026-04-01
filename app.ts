@@ -196,12 +196,19 @@ function addDecisionRow(date = "", decision = "", reasoning = ""): void {
   const tbody = document.getElementById("decision-rows") as HTMLTableSectionElement;
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><textarea class="decision-date" placeholder="MM/DD">${escapeHtml(date)}</textarea></td>
+    <td class="date-cell"><textarea class="decision-date" placeholder="MM/DD">${escapeHtml(date)}</textarea><button type="button" class="btn-today" title="Today">today</button></td>
     <td><textarea class="decision-text" placeholder="Decision">${escapeHtml(decision)}</textarea></td>
     <td><textarea class="decision-text" placeholder="Reasoning">${escapeHtml(reasoning)}</textarea></td>
     <td><button type="button" class="btn-remove" title="Remove">&times;</button></td>
   `;
   tr.querySelector(".btn-remove")!.addEventListener("click", () => tr.remove());
+  const dateTA = tr.querySelector(".decision-date") as HTMLTextAreaElement;
+  tr.querySelector(".btn-today")!.addEventListener("click", () => {
+    const now = new Date();
+    dateTA.value = String(now.getMonth() + 1).padStart(2, "0") + "/" + String(now.getDate()).padStart(2, "0");
+    autoResize(dateTA);
+    scheduleAutoSave();
+  });
   tr.querySelectorAll("textarea").forEach(ta => makeAutoResizing(ta));
   const textareas = tr.querySelectorAll("textarea");
   textareas[textareas.length - 1].addEventListener("keydown", (e) => {

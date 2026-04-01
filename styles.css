@@ -293,7 +293,8 @@ body {
 .plan-form.readonly button.btn-add,
 .plan-form.readonly button.btn-add-findout,
 .plan-form.readonly #btn-add-decision,
-.plan-form.readonly .btn-remove {
+.plan-form.readonly .btn-remove,
+.plan-form.readonly .btn-today {
   display: none;
 }
 
@@ -374,7 +375,7 @@ body {
 .findout-group .findout-item,
 .list-group .list-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   margin-bottom: 6px;
 }
@@ -384,6 +385,7 @@ body {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
+  margin-top: 8px;
 }
 
 .checklist-item textarea,
@@ -416,6 +418,7 @@ body {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
+  margin-top: 8px;
 }
 
 .findout-item textarea {
@@ -469,6 +472,7 @@ body {
   padding: 2px 6px;
   border-radius: 2px;
   flex-shrink: 0;
+  margin-top: 5px;
 }
 
 .btn-remove:hover {
@@ -503,6 +507,17 @@ body {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 8px;
+  table-layout: fixed;
+}
+
+.decision-table th:first-child,
+.decision-table td:first-child {
+  width: 160px;
+}
+
+.decision-table th:last-child,
+.decision-table td:last-child {
+  width: 30px;
 }
 
 .decision-table th {
@@ -519,6 +534,7 @@ body {
 
 .decision-table td {
   padding: 4px;
+  vertical-align: top;
 }
 
 .decision-table td textarea {
@@ -537,6 +553,38 @@ body {
 
 .decision-table td textarea:focus {
   outline: none;
+  border-color: #4a7cc9;
+}
+
+.date-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.date-cell .decision-date {
+  flex: 1;
+}
+
+.btn-today {
+  background: #e8f0fa;
+  border: 1px solid #b8d0ea;
+  border-radius: 2px;
+  color: #4a7cc9;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 6px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.btn-today:hover {
+  background: #d4e4f6;
   border-color: #4a7cc9;
 }
 
@@ -601,7 +649,8 @@ body {
   .btn-remove,
   .btn-add,
   .btn-add-findout,
-  #btn-add-decision {
+  #btn-add-decision,
+  .btn-today {
     display: none !important;
   }
 
