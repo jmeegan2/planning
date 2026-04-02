@@ -9,6 +9,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4a7cc9">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="terminal.css">
 </head>
 <body>
   <div class="layout">
@@ -31,6 +32,8 @@
         <div class="gear-menu">
           <button id="btn-gear" class="btn-gear" title="Settings">&#9881;</button>
           <div id="gear-dropdown" class="gear-dropdown">
+            <button id="btn-theme-toggle">Terminal Mode</button>
+            <div class="gear-divider"></div>
             <button id="btn-export">Export PDF</button>
             <button id="btn-export-json">Export JSON</button>
             <button id="btn-import-json">Import JSON</button>
@@ -194,6 +197,25 @@
     </div>
   </div>
 
+  <script>
+    // Theme toggle — runs before modules to prevent flash
+    if (localStorage.getItem("theme") === "terminal") document.body.classList.add("terminal-theme");
+    // Pause flicker when tab loses focus to prevent flash on return
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) document.body.classList.add("paused");
+      else document.body.classList.remove("paused");
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("btn-theme-toggle");
+      function updateLabel() { btn.textContent = document.body.classList.contains("terminal-theme") ? "Clean Mode" : "Terminal Mode"; }
+      updateLabel();
+      btn.addEventListener("click", () => {
+        document.body.classList.toggle("terminal-theme");
+        localStorage.setItem("theme", document.body.classList.contains("terminal-theme") ? "terminal" : "clean");
+        updateLabel();
+      });
+    });
+  </script>
   <script type="module" src="dist/app.js"></script>
   <script type="module" src="dist/pomodoro.js"></script>
   <script type="module" src="dist/backup.js"></script>

@@ -1,0 +1,493 @@
+/* Fallout Terminal Theme */
+body.terminal-theme {
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+  background: #0a0a0a;
+  color: #33ff33;
+}
+
+/* CRT scanline overlay */
+body.terminal-theme::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* CRT vignette */
+body.terminal-theme::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+body.terminal-theme .layout {
+  background: #0a0a0a;
+}
+
+/* Sidebar */
+body.terminal-theme .sidebar {
+  background: #0d0d0d;
+  border-right: 1px solid #1a3a1a;
+}
+
+body.terminal-theme .sidebar-header {
+  border-bottom: 1px solid #1a3a1a;
+}
+
+body.terminal-theme .sidebar-header h2 {
+  color: #33ff33;
+  text-shadow: 0 0 8px rgba(51, 255, 51, 0.5);
+}
+
+body.terminal-theme .sidebar-header button {
+  background: #1a3a1a;
+  color: #33ff33;
+  border: 1px solid #33ff33;
+}
+
+body.terminal-theme .sidebar-header button:hover {
+  background: #1a8a1a;
+}
+
+body.terminal-theme .sidebar-collapse-btn {
+  color: #33ff33;
+}
+
+body.terminal-theme .sidebar-collapse-btn:hover {
+  color: #33ff33;
+  background: #1a3a1a;
+}
+
+body.terminal-theme .sidebar-expand-btn {
+  background: #0d0d0d;
+  border-right: 1px solid #1a3a1a;
+  color: #33ff33;
+}
+
+body.terminal-theme .sidebar-expand-btn:hover {
+  background: #1a3a1a;
+}
+
+body.terminal-theme .plan-list li {
+  border-left: 3px solid transparent;
+}
+
+body.terminal-theme .plan-list li:hover {
+  background: #1a3a1a;
+}
+
+body.terminal-theme .plan-list li.active {
+  background: #1a3a1a;
+  border-left-color: #33ff33;
+}
+
+body.terminal-theme .plan-list li .plan-title {
+  color: #33ff33;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+body.terminal-theme .plan-list li .plan-meta {
+  color: #1a8a1a;
+}
+
+body.terminal-theme .plan-list li .plan-bucket {
+  background: #1a3a1a;
+  color: #33ff33;
+}
+
+/* Main */
+body.terminal-theme .main {
+  background: #0a0a0a !important;
+}
+
+/* Toolbar */
+body.terminal-theme .toolbar {
+  background: #0d0d0d;
+  border-bottom: 1px solid #1a3a1a;
+}
+
+body.terminal-theme .toolbar button {
+  background: #1a3a1a;
+  border: 1px solid #33ff33;
+  color: #33ff33;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+body.terminal-theme .toolbar button:hover {
+  background: #1a8a1a;
+  text-shadow: 0 0 8px rgba(51, 255, 51, 0.5);
+}
+
+body.terminal-theme .toolbar .btn-danger {
+  color: #ff4444;
+  border-color: #ff4444;
+}
+
+body.terminal-theme .toolbar .btn-danger:hover {
+  background: #3a1a1a;
+}
+
+/* Form sections */
+body.terminal-theme .form-section {
+  background: rgba(10, 15, 10, 0.9);
+  border: 1px solid #1a3a1a;
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.05);
+}
+
+body.terminal-theme .form-section h3 {
+  color: #33ff33;
+  border-bottom: 1px solid #1a3a1a;
+  text-shadow: 0 0 8px rgba(51, 255, 51, 0.4);
+  font-family: "IBM Plex Mono", monospace;
+}
+
+body.terminal-theme .meta-section {
+  background: rgba(15, 25, 15, 0.9);
+  border-color: #33ff33;
+}
+
+/* Inputs and textareas */
+body.terminal-theme .form-row input,
+body.terminal-theme .form-row textarea,
+body.terminal-theme .form-row select,
+body.terminal-theme .checklist-item textarea,
+body.terminal-theme .list-item textarea,
+body.terminal-theme .findout-item textarea,
+body.terminal-theme .findout-item .findout-plan,
+body.terminal-theme .decision-table td textarea,
+body.terminal-theme .backup-input {
+  background: #0a0a0a;
+  border: 1px solid #1a3a1a;
+  color: #33ff33;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+body.terminal-theme .form-row input:focus,
+body.terminal-theme .form-row textarea:focus,
+body.terminal-theme .form-row select:focus,
+body.terminal-theme .checklist-item textarea:focus,
+body.terminal-theme .list-item textarea:focus,
+body.terminal-theme .findout-item textarea:focus,
+body.terminal-theme .findout-item .findout-plan:focus,
+body.terminal-theme .decision-table td textarea:focus {
+  border-color: #33ff33;
+  box-shadow: 0 0 8px rgba(51, 255, 51, 0.2);
+}
+
+body.terminal-theme .form-row input::placeholder,
+body.terminal-theme .form-row textarea::placeholder,
+body.terminal-theme .checklist-item textarea::placeholder,
+body.terminal-theme .list-item textarea::placeholder,
+body.terminal-theme .findout-item textarea::placeholder,
+body.terminal-theme .findout-item .findout-plan::placeholder,
+body.terminal-theme .decision-table td textarea::placeholder {
+  color: #1a5a1a;
+}
+
+body.terminal-theme .form-row select option {
+  background: #0a0a0a;
+  color: #33ff33;
+}
+
+body.terminal-theme .form-row label,
+body.terminal-theme .list-label {
+  color: #1a8a1a;
+}
+
+/* Checkboxes */
+body.terminal-theme .checklist-item input[type="checkbox"],
+body.terminal-theme .findout-item input[type="checkbox"] {
+  accent-color: #33ff33;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #33ff33;
+  background: #0a0a0a;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+body.terminal-theme .checklist-item input[type="checkbox"]:checked,
+body.terminal-theme .findout-item input[type="checkbox"]:checked {
+  background: #1a3a1a;
+}
+
+body.terminal-theme .checklist-item input[type="checkbox"]:checked::after,
+body.terminal-theme .findout-item input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: -1px;
+  left: 2px;
+  color: #33ff33;
+  font-size: 13px;
+}
+
+/* Buttons */
+body.terminal-theme .btn-add,
+body.terminal-theme .btn-add-findout,
+body.terminal-theme #btn-add-decision {
+  border: 1px dashed #1a5a1a;
+  color: #1a8a1a;
+}
+
+body.terminal-theme .btn-add:hover,
+body.terminal-theme .btn-add-findout:hover,
+body.terminal-theme #btn-add-decision:hover {
+  border-color: #33ff33;
+  color: #33ff33;
+}
+
+body.terminal-theme .btn-remove {
+  color: #ff4444;
+}
+
+body.terminal-theme .btn-remove:hover {
+  background: #3a1a1a;
+}
+
+body.terminal-theme .btn-today {
+  background: #1a3a1a;
+  border: 1px solid #33ff33;
+  color: #33ff33;
+}
+
+body.terminal-theme .btn-today:hover {
+  background: #1a8a1a;
+}
+
+/* Decision table */
+body.terminal-theme .decision-table th {
+  color: #1a8a1a;
+  border-bottom: 1px solid #1a3a1a;
+}
+
+/* Images */
+body.terminal-theme .image-drop-zone {
+  border: 2px dashed #1a3a1a;
+  color: #1a8a1a;
+}
+
+body.terminal-theme .image-drop-zone:hover,
+body.terminal-theme .image-drop-zone.dragover {
+  border-color: #33ff33;
+  background: #1a3a1a;
+}
+
+body.terminal-theme .image-item {
+  border: 1px solid #1a3a1a;
+}
+
+/* Gear dropdown */
+body.terminal-theme .gear-dropdown {
+  background: #0d0d0d;
+  border: 1px solid #1a3a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+body.terminal-theme .gear-dropdown button {
+  color: #33ff33;
+}
+
+body.terminal-theme .gear-dropdown button:hover {
+  background: #1a3a1a;
+}
+
+body.terminal-theme .gear-divider {
+  background: #1a3a1a;
+}
+
+body.terminal-theme .backup-label {
+  color: #1a8a1a;
+}
+
+body.terminal-theme .backup-actions button {
+  background: #1a3a1a;
+  border: 1px solid #1a5a1a;
+  color: #33ff33;
+}
+
+body.terminal-theme .backup-actions button:hover {
+  background: #1a8a1a;
+}
+
+/* Pomodoro */
+body.terminal-theme .pomo-toggle {
+  background: #8b0000;
+  border: 1px solid #ff4444;
+}
+
+body.terminal-theme .pomo-toggle:hover {
+  background: #aa0000;
+}
+
+body.terminal-theme .pomo-body {
+  background: #0d0d0d;
+  border: 1px solid #1a3a1a;
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.1);
+}
+
+body.terminal-theme .pomo-track {
+  stroke: #1a3a1a;
+}
+
+body.terminal-theme .pomo-fill {
+  stroke: #33ff33;
+}
+
+body.terminal-theme .pomo-timer[data-phase="short-break"] .pomo-fill,
+body.terminal-theme .pomo-timer[data-phase="long-break"] .pomo-fill {
+  stroke: #33ff33;
+}
+
+body.terminal-theme #pomo-time {
+  color: #33ff33;
+  text-shadow: 0 0 10px rgba(51, 255, 51, 0.5);
+}
+
+body.terminal-theme #pomo-phase {
+  color: #1a8a1a;
+}
+
+body.terminal-theme .pomo-info {
+  color: #1a8a1a;
+}
+
+body.terminal-theme .pomo-controls button {
+  background: #1a3a1a;
+  border: 1px solid #1a5a1a;
+  color: #33ff33;
+}
+
+body.terminal-theme .pomo-controls button:hover {
+  background: #1a8a1a;
+}
+
+body.terminal-theme #pomo-start {
+  background: #1a3a1a;
+  border-color: #33ff33;
+  color: #33ff33;
+}
+
+body.terminal-theme #pomo-start:hover {
+  background: #1a8a1a;
+}
+
+body.terminal-theme .pomo-gear {
+  color: #1a8a1a;
+}
+
+body.terminal-theme .pomo-gear:hover {
+  color: #33ff33;
+}
+
+body.terminal-theme .pomo-settings td {
+  color: #1a8a1a;
+}
+
+body.terminal-theme .pomo-settings input {
+  background: #0a0a0a;
+  border: 1px solid #1a3a1a;
+  color: #33ff33;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+/* Scrollbar */
+body.terminal-theme ::-webkit-scrollbar-thumb {
+  background: #1a3a1a;
+}
+
+body.terminal-theme ::-webkit-scrollbar-thumb:hover {
+  background: #1a8a1a;
+}
+
+/* Checked items */
+body.terminal-theme .checklist-item.checked,
+body.terminal-theme .findout-item.checked {
+  opacity: 0.4;
+}
+
+/* Readonly */
+body.terminal-theme .plan-form.readonly input,
+body.terminal-theme .plan-form.readonly textarea,
+body.terminal-theme .plan-form.readonly select {
+  opacity: 0.6;
+}
+
+/* Flicker animation */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+body.terminal-theme .main {
+  animation: flicker 8s infinite;
+}
+
+body.terminal-theme.paused .main {
+  animation-play-state: paused;
+}
+
+/* Glow on focused inputs */
+body.terminal-theme *:focus {
+  text-shadow: 0 0 6px rgba(51, 255, 51, 0.4);
+}
+
+/* Green glow on all text */
+body.terminal-theme .plan-form {
+  text-shadow: 0 0 2px rgba(51, 255, 51, 0.15);
+}
+
+/* Section headers get brighter glow */
+body.terminal-theme .form-section:hover h3 {
+  text-shadow: 0 0 12px rgba(51, 255, 51, 0.7);
+}
+
+/* Sidebar items glow on hover */
+body.terminal-theme .plan-list li:hover .plan-title {
+  text-shadow: 0 0 8px rgba(51, 255, 51, 0.5);
+}
+
+/* Boot-up style cursor blink on empty textareas */
+body.terminal-theme textarea:focus {
+  caret-color: #33ff33;
+}
+
+/* Title input gets extra glow */
+body.terminal-theme #title {
+  font-size: 16px;
+  text-shadow: 0 0 6px rgba(51, 255, 51, 0.3);
+}
+
+/* Amber variant for meta section labels */
+body.terminal-theme .meta-section .form-row label {
+  color: #33ff33;
+  text-shadow: 0 0 4px rgba(51, 255, 51, 0.3);
+}
+
+/* Pomo timer number glow */
+body.terminal-theme #pomo-time {
+  text-shadow: 0 0 15px rgba(51, 255, 51, 0.7), 0 0 30px rgba(51, 255, 51, 0.3);
+}
