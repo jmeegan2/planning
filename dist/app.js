@@ -296,6 +296,10 @@ function gatherFormData() {
             checked: el.querySelector("input[type='checkbox']").checked,
         });
     });
+    const noteItems = [];
+    document.querySelectorAll("#note-items .list-item").forEach(el => {
+        noteItems.push(el.querySelector("textarea").value);
+    });
     const riskItems = [];
     document.querySelectorAll("#risk-items .list-item").forEach(el => {
         riskItems.push(el.querySelector("textarea").value);
@@ -313,7 +317,7 @@ function gatherFormData() {
     const surprised = document.getElementById("surprised").value;
     const differently = document.getElementById("differently").value;
     const images = getImages();
-    return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, riskItems, images, decisions, actualTime, surprised, differently };
+    return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, noteItems, riskItems, images, decisions, actualTime, surprised, differently };
 }
 // Populate form from a plan
 function populateForm(plan) {
@@ -326,6 +330,7 @@ function populateForm(plan) {
     document.getElementById("know-items").innerHTML = "";
     document.getElementById("find-out-items").innerHTML = "";
     document.getElementById("chunk-items").innerHTML = "";
+    document.getElementById("note-items").innerHTML = "";
     document.getElementById("risk-items").innerHTML = "";
     document.getElementById("decision-rows").innerHTML = "";
     for (const item of plan.doneItems)
@@ -336,6 +341,8 @@ function populateForm(plan) {
         addFindOutItem("find-out-items", item.unknown, item.plan, item.checked);
     for (const item of plan.chunkItems)
         addChecklistItem("chunk-items", item.text, item.checked);
+    for (const item of (plan.noteItems || []))
+        addListItem("note-items", item);
     for (const item of plan.riskItems)
         addListItem("risk-items", item);
     renderImages(plan.images || []);
@@ -354,6 +361,7 @@ function clearForm() {
     document.getElementById("know-items").innerHTML = "";
     document.getElementById("find-out-items").innerHTML = "";
     document.getElementById("chunk-items").innerHTML = "";
+    document.getElementById("note-items").innerHTML = "";
     document.getElementById("risk-items").innerHTML = "";
     document.getElementById("decision-rows").innerHTML = "";
     imageGallery.innerHTML = "";
@@ -365,6 +373,7 @@ function clearForm() {
     addListItem("know-items");
     addFindOutItem("find-out-items");
     addChecklistItem("chunk-items");
+    addListItem("note-items");
     addListItem("risk-items");
 }
 function setEditMode(enabled) {

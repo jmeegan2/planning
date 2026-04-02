@@ -25,6 +25,7 @@ interface TaskPlan {
   knowItems: string[];
   findOutItems: FindOutItem[];
   chunkItems: ChecklistItem[];
+  noteItems: string[];
   riskItems: string[];
   images: string[];
   decisions: DecisionRow[];
@@ -358,6 +359,11 @@ function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
     });
   });
 
+  const noteItems: string[] = [];
+  document.querySelectorAll("#note-items .list-item").forEach(el => {
+    noteItems.push((el.querySelector("textarea") as HTMLTextAreaElement).value);
+  });
+
   const riskItems: string[] = [];
   document.querySelectorAll("#risk-items .list-item").forEach(el => {
     riskItems.push((el.querySelector("textarea") as HTMLTextAreaElement).value);
@@ -379,7 +385,7 @@ function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
 
   const images = getImages();
 
-  return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, riskItems, images, decisions, actualTime, surprised, differently };
+  return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, noteItems, riskItems, images, decisions, actualTime, surprised, differently };
 }
 
 // Populate form from a plan
@@ -394,6 +400,7 @@ function populateForm(plan: TaskPlan): void {
   document.getElementById("know-items")!.innerHTML = "";
   document.getElementById("find-out-items")!.innerHTML = "";
   document.getElementById("chunk-items")!.innerHTML = "";
+  document.getElementById("note-items")!.innerHTML = "";
   document.getElementById("risk-items")!.innerHTML = "";
   document.getElementById("decision-rows")!.innerHTML = "";
 
@@ -401,6 +408,7 @@ function populateForm(plan: TaskPlan): void {
   for (const item of plan.knowItems) addListItem("know-items", item);
   for (const item of plan.findOutItems) addFindOutItem("find-out-items", item.unknown, item.plan, item.checked);
   for (const item of plan.chunkItems) addChecklistItem("chunk-items", item.text, item.checked);
+  for (const item of (plan.noteItems || [])) addListItem("note-items", item);
   for (const item of plan.riskItems) addListItem("risk-items", item);
   renderImages(plan.images || []);
   for (const d of plan.decisions) addDecisionRow(d.date, d.decision, d.reasoning);
@@ -419,6 +427,7 @@ function clearForm(): void {
   document.getElementById("know-items")!.innerHTML = "";
   document.getElementById("find-out-items")!.innerHTML = "";
   document.getElementById("chunk-items")!.innerHTML = "";
+  document.getElementById("note-items")!.innerHTML = "";
   document.getElementById("risk-items")!.innerHTML = "";
   document.getElementById("decision-rows")!.innerHTML = "";
   imageGallery.innerHTML = "";
@@ -431,6 +440,7 @@ function clearForm(): void {
   addListItem("know-items");
   addFindOutItem("find-out-items");
   addChecklistItem("chunk-items");
+  addListItem("note-items");
   addListItem("risk-items");
 }
 
