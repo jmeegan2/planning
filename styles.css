@@ -1038,9 +1038,6 @@ body {
   padding-bottom: 0;
 }
 
-body.terminal-theme #note-items .list-item {
-  border-bottom-color: #1a3a1a;
-}
 
 /* Markdown rendered content */
 .md-render {
@@ -1103,78 +1100,12 @@ body.terminal-theme #note-items .list-item {
   margin: 4px 0;
 }
 
-/* Terminal theme markdown */
-body.terminal-theme .md-render {
-  color: #33ff33;
-  background: #0a0a0a;
-  border: 1px solid #1a3a1a;
-  border-radius: 2px;
-}
-body.terminal-theme .md-render code {
-  background: #1a3a1a;
-  color: #33ff33;
-}
-body.terminal-theme .md-render pre {
-  background: #1a3a1a;
-}
-body.terminal-theme .md-render a {
-  color: #33ff33;
-  text-decoration: underline;
-}
-body.terminal-theme .md-render blockquote {
-  border-left-color: #1a3a1a;
-  color: #1a8a1a;
-}
-
 /* Print / PDF export */
 @media print {
-  body, body.terminal-theme {
-    background: #fff !important;
-    color: #2c2c2c !important;
+  body {
+    background: #fff;
     overflow: visible;
     height: auto;
-  }
-
-  body.terminal-theme::before,
-  body.terminal-theme::after {
-    display: none !important;
-  }
-
-  body.terminal-theme .main {
-    animation: none !important;
-    background: #fff !important;
-  }
-
-  body.terminal-theme .form-section {
-    background: #fff !important;
-    border-color: #ccc !important;
-    box-shadow: none !important;
-  }
-
-  body.terminal-theme .form-section h3 {
-    color: #3566a8 !important;
-    text-shadow: none !important;
-  }
-
-  body.terminal-theme *,
-  body.terminal-theme *::before,
-  body.terminal-theme *::after {
-    color: #000 !important;
-    background: transparent !important;
-    border-color: #ccc !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-    text-decoration-color: #000 !important;
-    -webkit-text-fill-color: #000 !important;
-  }
-
-  body.terminal-theme .form-section {
-    background: #fff !important;
-    border: 1px solid #ccc !important;
-  }
-
-  body.terminal-theme .meta-section {
-    background: #f5f8fc !important;
   }
 
   .layout {
