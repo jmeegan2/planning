@@ -1,7 +1,7 @@
 {
   "name": "Task Planner",
   "short_name": "Planner",
-  "start_url": "/planningTooling/",
+  "start_url": "/planning/",
   "display": "standalone",
   "background_color": "#f8f9fb",
   "theme_color": "#4a7cc9",
