@@ -2,7 +2,7 @@
 
 **Live site:** https://jmeegan2.github.io/planning/
 
-A lightweight task planning tool built with vanilla TypeScript, HTML, and CSS. Designed around a structured template for breaking down engineering work into manageable chunks. Installable as a PWA.
+A lightweight task planning tool built with vanilla TypeScript, HTML, and CSS. Zero runtime dependencies. Designed around a structured template for breaking down engineering work into manageable chunks. Installable as a PWA.
 
 ## Features
 
@@ -14,7 +14,8 @@ A lightweight task planning tool built with vanilla TypeScript, HTML, and CSS. D
 - **Notes** — freeform entries for jotting things down during implementation
 - **Image attachments** — drag-and-drop image uploads stored as base64
 - **Pomodoro timer** — 25/5/15 cycle with configurable times, sound alerts, and browser notifications
-- **Export/Import JSON** — backup and restore all plans
+- **GitHub Gist backup** — auto-backs up all plans to a private gist every 5 minutes
+- **Export/Import JSON** — manual backup and restore
 - **Export PDF** — print-friendly layout
 - **PWA** — installable as a desktop app, works offline
 - **Zero dependencies at runtime** — just static HTML/CSS/JS, runs on GitHub Pages
@@ -51,6 +52,7 @@ src/
   ui.ts       — DOM helpers (checklists, lists, auto-resize, images)
   app.ts      — state management, event wiring, init
   pomodoro.ts — pomodoro timer
+  backup.ts   — GitHub Gist auto-backup
 dist/         — compiled JS output
 ```
 
@@ -60,4 +62,5 @@ dist/         — compiled JS output
 - HTML + CSS (graph paper theme)
 - localStorage for persistence
 - Web Audio API for timer alerts
+- GitHub Gist API for cloud backup
 - Service worker for offline PWA support
