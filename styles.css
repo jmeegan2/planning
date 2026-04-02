@@ -590,7 +590,8 @@ body {
   gap: 6px;
 }
 
-.date-cell .decision-date {
+.date-cell .decision-date,
+.date-cell input {
   flex: 1;
 }
 

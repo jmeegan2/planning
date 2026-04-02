@@ -153,7 +153,7 @@ function addDecisionRow(date = "", decision = "", reasoning = "") {
     const tbody = document.getElementById("decision-rows");
     const tr = document.createElement("tr");
     tr.innerHTML = `
-    <td class="date-cell"><textarea class="decision-date" placeholder="MM/DD">${escapeHtml(date)}</textarea><button type="button" class="btn-today" title="Today">today</button></td>
+    <td class="date-cell"><textarea class="decision-date" placeholder="MM/DD/YY">${escapeHtml(date)}</textarea><button type="button" class="btn-today" title="Today">today</button></td>
     <td><textarea class="decision-text" placeholder="Decision">${escapeHtml(decision)}</textarea></td>
     <td><textarea class="decision-text" placeholder="Reasoning">${escapeHtml(reasoning)}</textarea></td>
     <td><button type="button" class="btn-remove" title="Remove">&times;</button></td>
@@ -162,7 +162,7 @@ function addDecisionRow(date = "", decision = "", reasoning = "") {
     const dateTA = tr.querySelector(".decision-date");
     tr.querySelector(".btn-today").addEventListener("click", () => {
         const now = new Date();
-        dateTA.value = String(now.getMonth() + 1).padStart(2, "0") + "/" + String(now.getDate()).padStart(2, "0");
+        dateTA.value = String(now.getMonth() + 1).padStart(2, "0") + "/" + String(now.getDate()).padStart(2, "0") + "/" + String(now.getFullYear()).slice(2);
         autoResize(dateTA);
         scheduleAutoSave();
     });
@@ -508,6 +508,13 @@ document.querySelectorAll(".btn-add-findout").forEach(btn => {
 });
 document.getElementById("btn-add-decision").addEventListener("click", () => {
     addDecisionRow();
+});
+// Date Started today button
+document.getElementById("btn-today-started").addEventListener("click", () => {
+    const now = new Date();
+    const input = document.getElementById("date-started");
+    input.value = String(now.getMonth() + 1).padStart(2, "0") + "/" + String(now.getDate()).padStart(2, "0") + "/" + String(now.getFullYear()).slice(2);
+    scheduleAutoSave();
 });
 // Make wrap-up textareas auto-resizing
 makeAutoResizing(document.getElementById("actual-time"));
