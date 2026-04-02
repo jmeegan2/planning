@@ -766,6 +766,191 @@ body {
   background: #a0adb8;
 }
 
+/* Pomodoro Timer */
+.pomo-timer {
+  position: fixed;
+  bottom: 40px;
+  left: 20px;
+  z-index: 100;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.pomo-toggle {
+  background: #e05545;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pomo-toggle:hover {
+  background: #c94436;
+}
+
+.pomo-body {
+  position: relative;
+  background: #fff;
+  border: 2px solid #d0d7e2;
+  border-radius: 4px;
+  padding: 16px;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.pomo-timer.collapsed .pomo-body {
+  display: none;
+}
+
+.pomo-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.pomo-ring svg {
+  width: 100%;
+  height: 100%;
+}
+
+.pomo-track {
+  fill: none;
+  stroke: #e8ecf1;
+  stroke-width: 6;
+}
+
+.pomo-fill {
+  fill: none;
+  stroke: #4a7cc9;
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.pomo-timer[data-phase="short-break"] .pomo-fill,
+.pomo-timer[data-phase="long-break"] .pomo-fill {
+  stroke: #48a86b;
+}
+
+.pomo-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+#pomo-time {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+#pomo-phase {
+  display: block;
+  font-size: 10px;
+  color: #6b7a8d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+.pomo-info {
+  font-size: 11px;
+  color: #6b7a8d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pomo-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.pomo-controls button {
+  background: #e4e8ef;
+  border: 1px solid #c0c9d6;
+  color: #3a4a5c;
+  padding: 5px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pomo-controls button:hover {
+  background: #d6dce6;
+}
+
+#pomo-start {
+  background: #4a7cc9;
+  border-color: #4a7cc9;
+  color: #fff;
+}
+
+#pomo-start:hover {
+  background: #3b68ad;
+}
+
+.pomo-gear {
+  cursor: pointer;
+  font-size: 18px;
+  color: #6b7a8d;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.pomo-gear:hover {
+  color: #3a4a5c;
+}
+
+.pomo-settings {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  border-top: 1px solid #e8ecf1;
+  padding-top: 8px;
+}
+
+.pomo-settings td {
+  font-size: 11px;
+  color: #6b7a8d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 4px;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.pomo-settings input {
+  width: 50px;
+  padding: 3px 6px;
+  border: 1px solid #d0d7e2;
+  border-radius: 2px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  text-align: center;
+  color: #2c2c2c;
+}
+
+.pomo-settings input:focus {
+  outline: none;
+  border-color: #4a7cc9;
+}
+
 /* Print / PDF export */
 @media print {
   body {
@@ -782,6 +967,7 @@ body {
   .sidebar,
   .sidebar-expand-btn,
   .toolbar,
+  .pomo-timer,
   .btn-remove,
   .btn-add,
   .btn-add-findout,

@@ -154,7 +154,39 @@
       </form>
     </main>
   </div>
+  <!-- Pomodoro Timer -->
+  <div id="pomo-timer" class="pomo-timer collapsed" data-phase="work">
+    <button id="pomo-toggle" class="pomo-toggle">Pomo</button>
+    <div class="pomo-body">
+      <span id="pomo-settings-toggle" class="pomo-gear">&#9881;</span>
+      <div class="pomo-ring">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" class="pomo-track"/>
+          <circle id="pomo-progress" cx="50" cy="50" r="45" class="pomo-fill" transform="rotate(-90 50 50)"/>
+        </svg>
+        <div class="pomo-center">
+          <span id="pomo-time">25:00</span>
+          <span id="pomo-phase">Focus</span>
+        </div>
+      </div>
+      <div class="pomo-info">
+        <span>Round <span id="pomo-round">#1</span></span>
+      </div>
+      <div class="pomo-controls">
+        <button id="pomo-start">Start</button>
+        <button id="pomo-skip">Skip</button>
+        <button id="pomo-reset">Reset</button>
+      </div>
+      <table id="pomo-settings" class="pomo-settings" style="display:none;">
+        <tr><td>Focus</td><td><input type="number" id="pomo-work-mins" min="1" max="90" value="25"></td><td>min</td></tr>
+        <tr><td>Short</td><td><input type="number" id="pomo-short-mins" min="1" max="30" value="5"></td><td>min</td></tr>
+        <tr><td>Long</td><td><input type="number" id="pomo-long-mins" min="1" max="60" value="15"></td><td>min</td></tr>
+      </table>
+    </div>
+  </div>
+
   <script type="module" src="dist/app.js"></script>
+  <script type="module" src="dist/pomodoro.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js");
