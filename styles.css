@@ -753,6 +753,29 @@ body {
     break-inside: avoid;
   }
 
+  /* Allow large sections to break across pages */
+  .form-section:has(.decision-table),
+  .form-section:has(.list-group),
+  .form-section:has(.checklist-group),
+  .form-section:has(.findout-group),
+  .form-section:has(.image-gallery) {
+    break-inside: auto;
+  }
+
+  /* Keep individual items together */
+  .checklist-item,
+  .list-item,
+  .findout-item,
+  .decision-table tr,
+  .image-item {
+    break-inside: avoid;
+  }
+
+  /* Keep section headers with some content */
+  .form-section h3 {
+    break-after: avoid;
+  }
+
   .meta-section {
     background: #f5f8fc;
   }
