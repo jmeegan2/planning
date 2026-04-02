@@ -8,6 +8,7 @@ const planListEl = document.getElementById("plan-list");
 const formEl = document.getElementById("plan-form");
 const btnNew = document.getElementById("btn-new");
 const btnEdit = document.getElementById("btn-edit");
+const btnDone = document.getElementById("btn-done");
 const btnDelete = document.getElementById("btn-delete");
 const btnExport = document.getElementById("btn-export");
 const sidebarEl = document.getElementById("sidebar");
@@ -234,6 +235,7 @@ function setEditMode(enabled) {
         clearMarkdown();
         formEl.classList.remove("readonly");
         btnEdit.style.display = "none";
+        btnDone.style.display = "";
         requestAnimationFrame(() => {
             document.querySelectorAll(".plan-form textarea").forEach(autoResize);
         });
@@ -241,6 +243,7 @@ function setEditMode(enabled) {
     else {
         formEl.classList.add("readonly");
         btnEdit.style.display = "";
+        btnDone.style.display = "none";
         renderMarkdown();
     }
 }
@@ -298,6 +301,7 @@ function deletePlan() {
 // --- Event wiring ---
 btnNew.addEventListener("click", newPlan);
 btnEdit.addEventListener("click", () => setEditMode(true));
+btnDone.addEventListener("click", () => { autoSave(); setEditMode(false); });
 btnDelete.addEventListener("click", deletePlan);
 btnExport.addEventListener("click", () => { gearDropdown.classList.remove("open"); window.print(); });
 document.querySelectorAll(".btn-add").forEach(btn => {

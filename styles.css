@@ -405,10 +405,32 @@ body {
 .form-section {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid #d0d7e2;
+  border-left: 3px solid #d0d7e2;
   border-radius: 2px;
   padding: 20px;
   margin-bottom: 16px;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Planning sections (1-5) — blue */
+.form-section:has(#done-items),
+.form-section:has(#know-items),
+.form-section:has(#find-out-items),
+.form-section:has(#chunk-items),
+.form-section:has(#risk-items) {
+  border-left-color: #4a7cc9;
+}
+
+/* During-work sections (notes, attachments, decision log) — amber */
+.form-section:has(#note-items),
+.form-section:has(#image-drop),
+.form-section:has(.decision-table) {
+  border-left-color: #d4a843;
+}
+
+/* Reflection (wrap-up) — green */
+.form-section:has(#actual-time) {
+  border-left-color: #48a86b;
 }
 
 .form-section h3 {

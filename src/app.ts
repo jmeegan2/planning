@@ -13,6 +13,7 @@ const planListEl = document.getElementById("plan-list") as HTMLUListElement;
 const formEl = document.getElementById("plan-form") as HTMLFormElement;
 const btnNew = document.getElementById("btn-new") as HTMLButtonElement;
 const btnEdit = document.getElementById("btn-edit") as HTMLButtonElement;
+const btnDone = document.getElementById("btn-done") as HTMLButtonElement;
 const btnDelete = document.getElementById("btn-delete") as HTMLButtonElement;
 const btnExport = document.getElementById("btn-export") as HTMLButtonElement;
 const sidebarEl = document.getElementById("sidebar") as HTMLElement;
@@ -257,12 +258,14 @@ function setEditMode(enabled: boolean): void {
     clearMarkdown();
     formEl.classList.remove("readonly");
     btnEdit.style.display = "none";
+    btnDone.style.display = "";
     requestAnimationFrame(() => {
       document.querySelectorAll<HTMLTextAreaElement>(".plan-form textarea").forEach(autoResize);
     });
   } else {
     formEl.classList.add("readonly");
     btnEdit.style.display = "";
+    btnDone.style.display = "none";
     renderMarkdown();
   }
 }
@@ -327,6 +330,7 @@ function deletePlan(): void {
 
 btnNew.addEventListener("click", newPlan);
 btnEdit.addEventListener("click", () => setEditMode(true));
+btnDone.addEventListener("click", () => { autoSave(); setEditMode(false); });
 btnDelete.addEventListener("click", deletePlan);
 btnExport.addEventListener("click", () => { gearDropdown.classList.remove("open"); window.print(); });
 
