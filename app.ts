@@ -379,7 +379,7 @@ function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
     });
   });
 
-  const actualTime = (document.getElementById("actual-time") as HTMLInputElement).value;
+  const actualTime = (document.getElementById("actual-time") as HTMLTextAreaElement).value;
   const surprised = (document.getElementById("surprised") as HTMLTextAreaElement).value;
   const differently = (document.getElementById("differently") as HTMLTextAreaElement).value;
 
@@ -413,9 +413,13 @@ function populateForm(plan: TaskPlan): void {
   renderImages(plan.images || []);
   for (const d of plan.decisions) addDecisionRow(d.date, d.decision, d.reasoning);
 
-  (document.getElementById("actual-time") as HTMLInputElement).value = plan.actualTime;
-  (document.getElementById("surprised") as HTMLTextAreaElement).value = plan.surprised;
-  (document.getElementById("differently") as HTMLTextAreaElement).value = plan.differently;
+  const actualTimeTA = document.getElementById("actual-time") as HTMLTextAreaElement;
+  const surprisedTA = document.getElementById("surprised") as HTMLTextAreaElement;
+  const differentlyTA = document.getElementById("differently") as HTMLTextAreaElement;
+  actualTimeTA.value = plan.actualTime;
+  surprisedTA.value = plan.surprised;
+  differentlyTA.value = plan.differently;
+  requestAnimationFrame(() => { autoResize(actualTimeTA); autoResize(surprisedTA); autoResize(differentlyTA); });
 }
 
 function clearForm(): void {
@@ -431,7 +435,7 @@ function clearForm(): void {
   document.getElementById("risk-items")!.innerHTML = "";
   document.getElementById("decision-rows")!.innerHTML = "";
   imageGallery.innerHTML = "";
-  (document.getElementById("actual-time") as HTMLInputElement).value = "";
+  (document.getElementById("actual-time") as HTMLTextAreaElement).value = "";
   (document.getElementById("surprised") as HTMLTextAreaElement).value = "";
   (document.getElementById("differently") as HTMLTextAreaElement).value = "";
 
@@ -578,6 +582,11 @@ document.querySelectorAll(".btn-add-findout").forEach(btn => {
 document.getElementById("btn-add-decision")!.addEventListener("click", () => {
   addDecisionRow();
 });
+
+// Make wrap-up textareas auto-resizing
+makeAutoResizing(document.getElementById("actual-time") as HTMLTextAreaElement);
+makeAutoResizing(document.getElementById("surprised") as HTMLTextAreaElement);
+makeAutoResizing(document.getElementById("differently") as HTMLTextAreaElement);
 
 // Init
 loadPlans();

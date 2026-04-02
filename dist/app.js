@@ -348,9 +348,13 @@ function populateForm(plan) {
     renderImages(plan.images || []);
     for (const d of plan.decisions)
         addDecisionRow(d.date, d.decision, d.reasoning);
-    document.getElementById("actual-time").value = plan.actualTime;
-    document.getElementById("surprised").value = plan.surprised;
-    document.getElementById("differently").value = plan.differently;
+    const actualTimeTA = document.getElementById("actual-time");
+    const surprisedTA = document.getElementById("surprised");
+    const differentlyTA = document.getElementById("differently");
+    actualTimeTA.value = plan.actualTime;
+    surprisedTA.value = plan.surprised;
+    differentlyTA.value = plan.differently;
+    requestAnimationFrame(() => { autoResize(actualTimeTA); autoResize(surprisedTA); autoResize(differentlyTA); });
 }
 function clearForm() {
     document.getElementById("title").value = "";
@@ -502,6 +506,10 @@ document.querySelectorAll(".btn-add-findout").forEach(btn => {
 document.getElementById("btn-add-decision").addEventListener("click", () => {
     addDecisionRow();
 });
+// Make wrap-up textareas auto-resizing
+makeAutoResizing(document.getElementById("actual-time"));
+makeAutoResizing(document.getElementById("surprised"));
+makeAutoResizing(document.getElementById("differently"));
 // Init
 loadPlans();
 renderSidebar();

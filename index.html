@@ -128,17 +128,13 @@
         <!-- 7. Wrap-up -->
         <div class="form-section">
           <h3>7. Wrap-up</h3>
-          <div class="form-row">
-            <label for="actual-time">Actual time vs estimate</label>
-            <input type="text" id="actual-time" placeholder="e.g. 6hrs estimated, 8hrs actual">
-          </div>
-          <div class="form-row">
-            <label for="surprised">What surprised me</label>
-            <textarea id="surprised" rows="2" placeholder="What was unexpected?"></textarea>
-          </div>
-          <div class="form-row">
-            <label for="differently">What I'd do differently</label>
-            <textarea id="differently" rows="2" placeholder="Lessons learned"></textarea>
+          <div class="list-group">
+            <label class="list-label">Actual time vs estimate</label>
+            <div class="list-item"><textarea id="actual-time" placeholder="e.g. 6hrs estimated, 8hrs actual"></textarea></div>
+            <label class="list-label">What surprised me</label>
+            <div class="list-item"><textarea id="surprised" placeholder="What was unexpected?"></textarea></div>
+            <label class="list-label">What I'd do differently</label>
+            <div class="list-item"><textarea id="differently" placeholder="Lessons learned"></textarea></div>
           </div>
         </div>
       </form>
