@@ -1,5 +1,5 @@
 import { loadPlansFromStorage, savePlansToStorage, generateId, exportJson, importJson } from "./storage.js";
-import { autoResize, makeAutoResizing, escapeHtml, todayString, addChecklistItem, addListItem, addFindOutItem, addDecisionRow, addImageToGallery, resizeImage } from "./ui.js";
+import { autoResize, makeAutoResizing, escapeHtml, todayString, addChecklistItem, addListItem, addDecisionRow, addImageToGallery, resizeImage } from "./ui.js";
 let plans = [];
 let activePlanId = null;
 let editMode = true;
@@ -104,13 +104,8 @@ function gatherFormData() {
         knowItems.push(el.querySelector("textarea").value);
     });
     const findOutItems = [];
-    document.querySelectorAll("#find-out-items .findout-item").forEach(el => {
-        const textareas = el.querySelectorAll("textarea");
-        findOutItems.push({
-            unknown: textareas[0].value,
-            plan: textareas[1].value,
-            checked: el.querySelector("input[type='checkbox']").checked,
-        });
+    document.querySelectorAll("#find-out-items .list-item").forEach(el => {
+        findOutItems.push(el.querySelector("textarea").value);
     });
     const chunkItems = [];
     document.querySelectorAll("#chunk-items .checklist-item").forEach(el => {
@@ -158,8 +153,17 @@ function populateForm(plan) {
         addChecklistItem("done-items", item.text, item.checked, scheduleAutoSave);
     for (const item of plan.knowItems)
         addListItem("know-items", item, scheduleAutoSave);
-    for (const item of plan.findOutItems)
-        addFindOutItem("find-out-items", item.unknown, item.plan, item.checked, scheduleAutoSave);
+    for (const item of plan.findOutItems) {
+        if (typeof item === "string") {
+            addListItem("find-out-items", item, scheduleAutoSave);
+        }
+        else {
+            // Migrate old format: combine unknown + plan into one string
+            const old = item;
+            const text = old.plan ? `${old.unknown}\nPlan: ${old.plan}` : old.unknown;
+            addListItem("find-out-items", text, scheduleAutoSave);
+        }
+    }
     for (const item of plan.chunkItems)
         addChecklistItem("chunk-items", item.text, item.checked, scheduleAutoSave);
     for (const item of (plan.noteItems || []))
@@ -195,7 +199,7 @@ function clearForm() {
     document.getElementById("differently").value = "";
     addChecklistItem("done-items", "", false, scheduleAutoSave);
     addListItem("know-items", "", scheduleAutoSave);
-    addFindOutItem("find-out-items", "", "", false, scheduleAutoSave);
+    addListItem("find-out-items", "", scheduleAutoSave);
     addChecklistItem("chunk-items", "", false, scheduleAutoSave);
     addListItem("note-items", "", scheduleAutoSave);
     addListItem("risk-items", "", scheduleAutoSave);
@@ -207,6 +211,9 @@ function renderMarkdown() {
             return;
         const overlay = document.createElement("div");
         overlay.className = "md-render";
+        // Carry over original classes for layout (e.g. findout-plan)
+        if (ta.classList.contains("findout-plan"))
+            overlay.classList.add("findout-plan");
         overlay.innerHTML = marked.parse(ta.value);
         ta.style.display = "none";
         ta.insertAdjacentElement("afterend", overlay);
@@ -302,12 +309,6 @@ document.querySelectorAll(".btn-add").forEach(btn => {
         else {
             addListItem(target, "", scheduleAutoSave);
         }
-    });
-});
-document.querySelectorAll(".btn-add-findout").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const target = btn.dataset.target;
-        addFindOutItem(target, "", "", false, scheduleAutoSave);
     });
 });
 document.getElementById("btn-add-decision").addEventListener("click", () => {

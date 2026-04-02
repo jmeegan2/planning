@@ -23,7 +23,7 @@ export interface TaskPlan {
   contextBucket: string;
   doneItems: ChecklistItem[];
   knowItems: string[];
-  findOutItems: FindOutItem[];
+  findOutItems: string[];
   chunkItems: ChecklistItem[];
   noteItems: string[];
   riskItems: string[];
