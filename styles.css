@@ -495,7 +495,9 @@ body {
 }
 
 .checklist-item textarea,
-.list-item textarea {
+.list-item textarea,
+.checklist-item .md-render,
+.list-item .md-render {
   flex: 1;
   padding: 6px 10px;
   background: #fff;
@@ -521,7 +523,9 @@ body {
 }
 
 .checklist-item.checked textarea,
-.findout-item.checked textarea {
+.findout-item.checked textarea,
+.checklist-item.checked .md-render,
+.findout-item.checked .md-render {
   text-decoration: line-through;
 }
 
@@ -1016,6 +1020,23 @@ body {
 .pomo-settings input:focus {
   outline: none;
   border-color: #4a7cc9;
+}
+
+/* Note items separation */
+#note-items .list-item {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e8ecf1;
+}
+
+#note-items .list-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+body.terminal-theme #note-items .list-item {
+  border-bottom-color: #1a3a1a;
 }
 
 /* Markdown rendered content */
