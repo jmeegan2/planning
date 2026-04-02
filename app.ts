@@ -453,6 +453,9 @@ function setEditMode(enabled: boolean): void {
   if (enabled) {
     formEl.classList.remove("readonly");
     btnEdit.style.display = "none";
+    requestAnimationFrame(() => {
+      document.querySelectorAll<HTMLTextAreaElement>(".plan-form textarea").forEach(autoResize);
+    });
   } else {
     formEl.classList.add("readonly");
     btnEdit.style.display = "";

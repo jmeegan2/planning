@@ -385,6 +385,9 @@ function setEditMode(enabled) {
     if (enabled) {
         formEl.classList.remove("readonly");
         btnEdit.style.display = "none";
+        requestAnimationFrame(() => {
+            document.querySelectorAll(".plan-form textarea").forEach(autoResize);
+        });
     }
     else {
         formEl.classList.add("readonly");
