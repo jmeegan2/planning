@@ -1,4 +1,4 @@
-const CACHE_NAME = "planner-v2";
+const CACHE_NAME = "planner-v3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,6 +8,7 @@ const ASSETS = [
   "./dist/storage.js",
   "./dist/ui.js",
   "./dist/pomodoro.js",
+  "./dist/backup.js",
   "./manifest.json"
 ];
 

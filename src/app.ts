@@ -330,6 +330,7 @@ document.getElementById("btn-today-started")!.addEventListener("click", () => {
 
 // Gear menu
 btnGear.addEventListener("click", (e) => { e.stopPropagation(); gearDropdown.classList.toggle("open"); });
+gearDropdown.addEventListener("click", (e) => e.stopPropagation());
 document.addEventListener("click", () => gearDropdown.classList.remove("open"));
 
 btnExportJson.addEventListener("click", () => {

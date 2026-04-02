@@ -35,6 +35,15 @@
             <button id="btn-export-json">Export JSON</button>
             <button id="btn-import-json">Import JSON</button>
             <input type="file" id="import-file" accept=".json" hidden>
+            <div class="gear-divider"></div>
+            <div class="backup-section">
+              <label class="backup-label">GitHub Gist Backup</label>
+              <input type="password" id="backup-token" placeholder="Paste token" class="backup-input">
+              <div class="backup-actions">
+                <button id="btn-backup-now">Backup Now</button>
+              </div>
+              <span id="backup-status" class="backup-status"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -187,6 +196,7 @@
 
   <script type="module" src="dist/app.js"></script>
   <script type="module" src="dist/pomodoro.js"></script>
+  <script type="module" src="dist/backup.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js");

@@ -313,6 +313,73 @@ body {
   background: #eef1f6;
 }
 
+.gear-divider {
+  height: 1px;
+  background: #e8ecf1;
+  margin: 4px 0;
+}
+
+.backup-section {
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.backup-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b7a8d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.backup-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #d0d7e2;
+  border-radius: 2px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: #2c2c2c;
+}
+
+.backup-input:focus {
+  outline: none;
+  border-color: #4a7cc9;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.backup-actions button {
+  flex: 1;
+  padding: 4px 8px;
+  background: #e4e8ef;
+  border: 1px solid #c0c9d6;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  color: #3a4a5c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.backup-actions button:hover {
+  background: #d6dce6;
+}
+
+.backup-status {
+  font-size: 10px;
+  color: #48a86b;
+  font-family: "IBM Plex Mono", monospace;
+  min-height: 14px;
+}
+
 /* Form */
 .plan-form {
   flex: 1;
