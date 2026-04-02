@@ -1,5 +1,5 @@
-"use strict";
-const STORAGE_KEY = "taskPlans";
+import { loadPlansFromStorage, savePlansToStorage, generateId, exportJson, importJson } from "./storage.js";
+import { autoResize, makeAutoResizing, escapeHtml, todayString, addChecklistItem, addListItem, addFindOutItem, addDecisionRow, addImageToGallery, resizeImage } from "./ui.js";
 let plans = [];
 let activePlanId = null;
 let editMode = true;
@@ -13,29 +13,27 @@ const btnExport = document.getElementById("btn-export");
 const sidebarEl = document.getElementById("sidebar");
 const btnCollapse = document.getElementById("btn-toggle-sidebar");
 const btnExpand = document.getElementById("btn-expand-sidebar");
-// Sidebar toggle
-btnCollapse.addEventListener("click", () => {
-    sidebarEl.classList.add("collapsed");
-});
-btnExpand.addEventListener("click", () => {
-    sidebarEl.classList.remove("collapsed");
-});
-// Export PDF
-btnExport.addEventListener("click", () => {
-    window.print();
-});
-// Load plans from localStorage
+const imageDropZone = document.getElementById("image-drop");
+const imageInput = document.getElementById("image-input");
+const imageGallery = document.getElementById("image-gallery");
+const btnGear = document.getElementById("btn-gear");
+const gearDropdown = document.getElementById("gear-dropdown");
+const btnExportJson = document.getElementById("btn-export-json");
+const btnImportJson = document.getElementById("btn-import-json");
+const importFileInput = document.getElementById("import-file");
+// --- Helpers ---
 function loadPlans() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    plans = raw ? JSON.parse(raw) : [];
+    plans = loadPlansFromStorage();
 }
 function savePlans() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
+    savePlansToStorage(plans);
 }
-function generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+function scheduleAutoSave() {
+    if (autoSaveTimer !== null)
+        clearTimeout(autoSaveTimer);
+    autoSaveTimer = window.setTimeout(autoSave, 500);
 }
-// Sidebar rendering
+// --- Sidebar ---
 function renderSidebar() {
     planListEl.innerHTML = "";
     const sorted = [...plans].sort((a, b) => b.updatedAt - a.updatedAt);
@@ -46,208 +44,13 @@ function renderSidebar() {
       <span class="plan-title">${escapeHtml(plan.title || "Untitled")}</span>
       <span class="plan-meta">${plan.dateStarted || "No date"}<span class="plan-bucket">${plan.contextBucket}</span></span>
     `;
-        li.addEventListener("click", () => {
-            loadPlan(plan.id);
-        });
+        li.addEventListener("click", () => loadPlan(plan.id));
         planListEl.appendChild(li);
     }
 }
-function escapeHtml(s) {
-    const div = document.createElement("div");
-    div.textContent = s;
-    return div.innerHTML;
-}
-// Auto-resize textarea helper
-function autoResize(ta) {
-    ta.style.height = "auto";
-    ta.style.height = ta.scrollHeight + "px";
-}
-function makeAutoResizing(ta) {
-    ta.rows = 1;
-    ta.addEventListener("input", () => autoResize(ta));
-    requestAnimationFrame(() => autoResize(ta));
-}
-// Recalculate all textareas on window resize
-window.addEventListener("resize", () => {
-    document.querySelectorAll(".plan-form textarea").forEach(autoResize);
-});
-// Checklist helpers
-function addChecklistItem(containerId, text = "", checked = false) {
-    const container = document.getElementById(containerId);
-    const div = document.createElement("div");
-    div.className = "checklist-item" + (checked ? " checked" : "");
-    div.innerHTML = `
-    <input type="checkbox" ${checked ? "checked" : ""}>
-    <textarea placeholder="Enter item...">${escapeHtml(text)}</textarea>
-    <button type="button" class="btn-remove" title="Remove">&times;</button>
-  `;
-    div.querySelector(".btn-remove").addEventListener("click", () => { div.remove(); scheduleAutoSave(); });
-    const cb = div.querySelector("input[type='checkbox']");
-    cb.addEventListener("change", () => {
-        div.classList.toggle("checked", cb.checked);
-    });
-    const ta = div.querySelector("textarea");
-    makeAutoResizing(ta);
-    ta.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            addChecklistItem(containerId);
-            const items = container.querySelectorAll(".checklist-item");
-            const last = items[items.length - 1];
-            last.querySelector("textarea").focus();
-        }
-    });
-    container.appendChild(div);
-}
-function addListItem(containerId, text = "") {
-    const container = document.getElementById(containerId);
-    const div = document.createElement("div");
-    div.className = "list-item";
-    div.innerHTML = `
-    <textarea placeholder="Enter item...">${escapeHtml(text)}</textarea>
-    <button type="button" class="btn-remove" title="Remove">&times;</button>
-  `;
-    div.querySelector(".btn-remove").addEventListener("click", () => { div.remove(); scheduleAutoSave(); });
-    const ta = div.querySelector("textarea");
-    makeAutoResizing(ta);
-    ta.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            addListItem(containerId);
-            const items = container.querySelectorAll(".list-item");
-            const last = items[items.length - 1];
-            last.querySelector("textarea").focus();
-        }
-    });
-    container.appendChild(div);
-}
-function addFindOutItem(containerId, unknown = "", plan = "", checked = false) {
-    const container = document.getElementById(containerId);
-    const div = document.createElement("div");
-    div.className = "findout-item" + (checked ? " checked" : "");
-    div.innerHTML = `
-    <input type="checkbox" ${checked ? "checked" : ""}>
-    <textarea placeholder="Unknown...">${escapeHtml(unknown)}</textarea>
-    <button type="button" class="btn-remove" title="Remove">&times;</button>
-    <textarea class="findout-plan" placeholder="Plan: read docs / ask someone / spike...">${escapeHtml(plan)}</textarea>
-  `;
-    div.querySelector(".btn-remove").addEventListener("click", () => { div.remove(); scheduleAutoSave(); });
-    const cb = div.querySelector("input[type='checkbox']");
-    cb.addEventListener("change", () => {
-        div.classList.toggle("checked", cb.checked);
-    });
-    div.querySelectorAll("textarea").forEach(ta => makeAutoResizing(ta));
-    const textareas = div.querySelectorAll("textarea");
-    textareas[textareas.length - 1].addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            addFindOutItem(containerId);
-            const items = container.querySelectorAll(".findout-item");
-            const last = items[items.length - 1];
-            last.querySelector("textarea").focus();
-        }
-    });
-    container.appendChild(div);
-}
-function addDecisionRow(date = "", decision = "", reasoning = "") {
-    const tbody = document.getElementById("decision-rows");
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-    <td class="date-cell"><textarea class="decision-date" placeholder="MM/DD/YY">${escapeHtml(date)}</textarea><button type="button" class="btn-today" title="Today">today</button></td>
-    <td><textarea class="decision-text" placeholder="Decision">${escapeHtml(decision)}</textarea></td>
-    <td><textarea class="decision-text" placeholder="Reasoning">${escapeHtml(reasoning)}</textarea></td>
-    <td><button type="button" class="btn-remove" title="Remove">&times;</button></td>
-  `;
-    tr.querySelector(".btn-remove").addEventListener("click", () => { tr.remove(); scheduleAutoSave(); });
-    const dateTA = tr.querySelector(".decision-date");
-    tr.querySelector(".btn-today").addEventListener("click", () => {
-        const now = new Date();
-        dateTA.value = String(now.getMonth() + 1).padStart(2, "0") + "/" + String(now.getDate()).padStart(2, "0") + "/" + String(now.getFullYear()).slice(2);
-        autoResize(dateTA);
-        scheduleAutoSave();
-    });
-    tr.querySelectorAll("textarea").forEach(ta => makeAutoResizing(ta));
-    const textareas = tr.querySelectorAll("textarea");
-    textareas[textareas.length - 1].addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            addDecisionRow();
-            const rows = tbody.querySelectorAll("tr");
-            const last = rows[rows.length - 1];
-            last.querySelector("textarea").focus();
-        }
-    });
-    tbody.appendChild(tr);
-}
-// Image handling
-const imageDropZone = document.getElementById("image-drop");
-const imageInput = document.getElementById("image-input");
-const imageGallery = document.getElementById("image-gallery");
-function resizeImage(file, maxWidth) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                let w = img.width;
-                let h = img.height;
-                if (w > maxWidth) {
-                    h = Math.round((h * maxWidth) / w);
-                    w = maxWidth;
-                }
-                canvas.width = w;
-                canvas.height = h;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, w, h);
-                resolve(canvas.toDataURL("image/jpeg", 0.92));
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-}
-function addImageToGallery(dataUrl) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "image-item";
-    wrapper.innerHTML = `
-    <img src="${dataUrl}">
-    <button type="button" class="btn-remove-img" title="Remove">&times;</button>
-  `;
-    wrapper.querySelector(".btn-remove-img").addEventListener("click", () => {
-        wrapper.remove();
-        scheduleAutoSave();
-    });
-    imageGallery.appendChild(wrapper);
-}
-async function handleFiles(files) {
-    for (let i = 0; i < files.length; i++) {
-        if (!files[i].type.startsWith("image/"))
-            continue;
-        const dataUrl = await resizeImage(files[i], 1600);
-        addImageToGallery(dataUrl);
-    }
-    scheduleAutoSave();
-}
-imageDropZone.addEventListener("click", () => imageInput.click());
-imageInput.addEventListener("change", () => {
-    if (imageInput.files)
-        handleFiles(imageInput.files);
-    imageInput.value = "";
-});
-imageDropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    imageDropZone.classList.add("dragover");
-});
-imageDropZone.addEventListener("dragleave", () => {
-    imageDropZone.classList.remove("dragover");
-});
-imageDropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    imageDropZone.classList.remove("dragover");
-    if (e.dataTransfer?.files)
-        handleFiles(e.dataTransfer.files);
-});
+btnCollapse.addEventListener("click", () => sidebarEl.classList.add("collapsed"));
+btnExpand.addEventListener("click", () => sidebarEl.classList.remove("collapsed"));
+// --- Images ---
 function getImages() {
     const imgs = [];
     imageGallery.querySelectorAll(".image-item img").forEach(img => {
@@ -258,12 +61,32 @@ function getImages() {
 function renderImages(images) {
     imageGallery.innerHTML = "";
     for (const src of images)
-        addImageToGallery(src);
+        addImageToGallery(imageGallery, src, scheduleAutoSave);
 }
-function escapeAttr(s) {
-    return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+async function handleFiles(files) {
+    for (let i = 0; i < files.length; i++) {
+        if (!files[i].type.startsWith("image/"))
+            continue;
+        const dataUrl = await resizeImage(files[i], 1600);
+        addImageToGallery(imageGallery, dataUrl, scheduleAutoSave);
+    }
+    scheduleAutoSave();
 }
-// Gather form data into a TaskPlan
+imageDropZone.addEventListener("click", () => imageInput.click());
+imageInput.addEventListener("change", () => {
+    if (imageInput.files)
+        handleFiles(imageInput.files);
+    imageInput.value = "";
+});
+imageDropZone.addEventListener("dragover", (e) => { e.preventDefault(); imageDropZone.classList.add("dragover"); });
+imageDropZone.addEventListener("dragleave", () => imageDropZone.classList.remove("dragover"));
+imageDropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    imageDropZone.classList.remove("dragover");
+    if (e.dataTransfer?.files)
+        handleFiles(e.dataTransfer.files);
+});
+// --- Form data ---
 function gatherFormData() {
     const title = document.getElementById("title").value;
     const ticket = document.getElementById("ticket").value;
@@ -319,13 +142,11 @@ function gatherFormData() {
     const images = getImages();
     return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, noteItems, riskItems, images, decisions, actualTime, surprised, differently };
 }
-// Populate form from a plan
 function populateForm(plan) {
     document.getElementById("title").value = plan.title;
     document.getElementById("ticket").value = plan.ticket;
     document.getElementById("date-started").value = plan.dateStarted;
     document.getElementById("context-bucket").value = plan.contextBucket;
-    // Clear dynamic sections
     document.getElementById("done-items").innerHTML = "";
     document.getElementById("know-items").innerHTML = "";
     document.getElementById("find-out-items").innerHTML = "";
@@ -334,20 +155,20 @@ function populateForm(plan) {
     document.getElementById("risk-items").innerHTML = "";
     document.getElementById("decision-rows").innerHTML = "";
     for (const item of plan.doneItems)
-        addChecklistItem("done-items", item.text, item.checked);
+        addChecklistItem("done-items", item.text, item.checked, scheduleAutoSave);
     for (const item of plan.knowItems)
-        addListItem("know-items", item);
+        addListItem("know-items", item, scheduleAutoSave);
     for (const item of plan.findOutItems)
-        addFindOutItem("find-out-items", item.unknown, item.plan, item.checked);
+        addFindOutItem("find-out-items", item.unknown, item.plan, item.checked, scheduleAutoSave);
     for (const item of plan.chunkItems)
-        addChecklistItem("chunk-items", item.text, item.checked);
+        addChecklistItem("chunk-items", item.text, item.checked, scheduleAutoSave);
     for (const item of (plan.noteItems || []))
-        addListItem("note-items", item);
+        addListItem("note-items", item, scheduleAutoSave);
     for (const item of plan.riskItems)
-        addListItem("risk-items", item);
+        addListItem("risk-items", item, scheduleAutoSave);
     renderImages(plan.images || []);
     for (const d of plan.decisions)
-        addDecisionRow(d.date, d.decision, d.reasoning);
+        addDecisionRow(d.date, d.decision, d.reasoning, scheduleAutoSave, scheduleAutoSave);
     const actualTimeTA = document.getElementById("actual-time");
     const surprisedTA = document.getElementById("surprised");
     const differentlyTA = document.getElementById("differently");
@@ -372,14 +193,14 @@ function clearForm() {
     document.getElementById("actual-time").value = "";
     document.getElementById("surprised").value = "";
     document.getElementById("differently").value = "";
-    // Add starter items
-    addChecklistItem("done-items");
-    addListItem("know-items");
-    addFindOutItem("find-out-items");
-    addChecklistItem("chunk-items");
-    addListItem("note-items");
-    addListItem("risk-items");
+    addChecklistItem("done-items", "", false, scheduleAutoSave);
+    addListItem("know-items", "", scheduleAutoSave);
+    addFindOutItem("find-out-items", "", "", false, scheduleAutoSave);
+    addChecklistItem("chunk-items", "", false, scheduleAutoSave);
+    addListItem("note-items", "", scheduleAutoSave);
+    addListItem("risk-items", "", scheduleAutoSave);
 }
+// --- Edit mode ---
 function setEditMode(enabled) {
     editMode = enabled;
     if (enabled) {
@@ -394,7 +215,7 @@ function setEditMode(enabled) {
         btnEdit.style.display = "";
     }
 }
-// Auto-save with debounce
+// --- Auto-save ---
 let autoSaveTimer = null;
 function autoSave() {
     if (!editMode)
@@ -408,59 +229,22 @@ function autoSave() {
         }
     }
     else {
-        // First edit on a new plan — create it
-        const plan = {
-            id: generateId(),
-            ...data,
-            createdAt: now,
-            updatedAt: now,
-        };
+        const plan = { id: generateId(), ...data, createdAt: now, updatedAt: now };
         plans.push(plan);
         activePlanId = plan.id;
     }
     savePlans();
     renderSidebar();
 }
-function scheduleAutoSave() {
-    if (autoSaveTimer !== null)
-        clearTimeout(autoSaveTimer);
-    autoSaveTimer = window.setTimeout(autoSave, 500);
-}
-// Listen for any input/change in the form
 formEl.addEventListener("input", scheduleAutoSave);
 formEl.addEventListener("change", scheduleAutoSave);
-// Create new plan
+// --- Plan operations ---
 function newPlan() {
     activePlanId = null;
     clearForm();
     setEditMode(true);
     renderSidebar();
 }
-// Save current form
-function savePlan() {
-    const data = gatherFormData();
-    const now = Date.now();
-    if (activePlanId) {
-        const idx = plans.findIndex(p => p.id === activePlanId);
-        if (idx !== -1) {
-            plans[idx] = { ...plans[idx], ...data, updatedAt: now };
-        }
-    }
-    else {
-        const newPlan = {
-            id: generateId(),
-            ...data,
-            createdAt: now,
-            updatedAt: now,
-        };
-        plans.push(newPlan);
-        activePlanId = newPlan.id;
-    }
-    savePlans();
-    setEditMode(false);
-    renderSidebar();
-}
-// Load a plan by ID
 function loadPlan(id) {
     const plan = plans.find(p => p.id === id);
     if (!plan)
@@ -470,7 +254,6 @@ function loadPlan(id) {
     setEditMode(false);
     renderSidebar();
 }
-// Delete active plan
 function deletePlan() {
     if (!activePlanId)
         return;
@@ -483,44 +266,81 @@ function deletePlan() {
     setEditMode(true);
     renderSidebar();
 }
-// Wire up event listeners
+// --- Event wiring ---
 btnNew.addEventListener("click", newPlan);
 btnEdit.addEventListener("click", () => setEditMode(true));
 btnDelete.addEventListener("click", deletePlan);
-// Add-item buttons for checklists and lists
+btnExport.addEventListener("click", () => { gearDropdown.classList.remove("open"); window.print(); });
 document.querySelectorAll(".btn-add").forEach(btn => {
     btn.addEventListener("click", () => {
         const target = btn.dataset.target;
         const container = document.getElementById(target);
         if (container.classList.contains("checklist-group")) {
-            addChecklistItem(target);
+            addChecklistItem(target, "", false, scheduleAutoSave);
         }
         else {
-            addListItem(target);
+            addListItem(target, "", scheduleAutoSave);
         }
     });
 });
 document.querySelectorAll(".btn-add-findout").forEach(btn => {
     btn.addEventListener("click", () => {
         const target = btn.dataset.target;
-        addFindOutItem(target);
+        addFindOutItem(target, "", "", false, scheduleAutoSave);
     });
 });
 document.getElementById("btn-add-decision").addEventListener("click", () => {
-    addDecisionRow();
+    addDecisionRow("", "", "", scheduleAutoSave, scheduleAutoSave);
 });
-// Date Started today button
 document.getElementById("btn-today-started").addEventListener("click", () => {
-    const now = new Date();
-    const input = document.getElementById("date-started");
-    input.value = String(now.getMonth() + 1).padStart(2, "0") + "/" + String(now.getDate()).padStart(2, "0") + "/" + String(now.getFullYear()).slice(2);
+    document.getElementById("date-started").value = todayString();
     scheduleAutoSave();
 });
-// Make wrap-up textareas auto-resizing
+// Gear menu
+btnGear.addEventListener("click", (e) => { e.stopPropagation(); gearDropdown.classList.toggle("open"); });
+document.addEventListener("click", () => gearDropdown.classList.remove("open"));
+btnExportJson.addEventListener("click", () => {
+    exportJson(plans);
+    gearDropdown.classList.remove("open");
+});
+btnImportJson.addEventListener("click", () => {
+    importFileInput.click();
+    gearDropdown.classList.remove("open");
+});
+importFileInput.addEventListener("change", async () => {
+    const file = importFileInput.files?.[0];
+    if (!file)
+        return;
+    try {
+        const imported = await importJson(file);
+        if (!confirm(`Import ${imported.length} plan(s)? This will replace all existing plans.`))
+            return;
+        savePlansToStorage(imported);
+        loadPlans();
+        renderSidebar();
+        if (plans.length > 0) {
+            const sorted = [...plans].sort((a, b) => b.updatedAt - a.updatedAt);
+            loadPlan(sorted[0].id);
+        }
+        else {
+            clearForm();
+            setEditMode(true);
+        }
+    }
+    catch {
+        alert("Invalid JSON file.");
+    }
+    importFileInput.value = "";
+});
+// Wrap-up textareas
 makeAutoResizing(document.getElementById("actual-time"));
 makeAutoResizing(document.getElementById("surprised"));
 makeAutoResizing(document.getElementById("differently"));
-// Init
+// Resize all textareas on window resize
+window.addEventListener("resize", () => {
+    document.querySelectorAll(".plan-form textarea").forEach(autoResize);
+});
+// --- Init ---
 loadPlans();
 renderSidebar();
 if (plans.length > 0) {
