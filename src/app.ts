@@ -2,6 +2,8 @@ import { TaskPlan, ChecklistItem, FindOutItem, DecisionRow } from "./types.js";
 import { loadPlansFromStorage, savePlansToStorage, generateId, exportJson, importJson } from "./storage.js";
 import { autoResize, makeAutoResizing, escapeHtml, todayString, addChecklistItem, addListItem, addFindOutItem, addDecisionRow, addImageToGallery, resizeImage } from "./ui.js";
 
+declare const marked: { parse: (s: string) => string };
+
 let plans: TaskPlan[] = [];
 let activePlanId: string | null = null;
 let editMode = true;
@@ -223,9 +225,29 @@ function clearForm(): void {
 
 // --- Edit mode ---
 
+function renderMarkdown(): void {
+  formEl.querySelectorAll<HTMLTextAreaElement>("textarea").forEach(ta => {
+    if (!ta.value.trim()) return;
+    const overlay = document.createElement("div");
+    overlay.className = "md-render";
+    overlay.innerHTML = marked.parse(ta.value);
+    ta.style.display = "none";
+    ta.insertAdjacentElement("afterend", overlay);
+  });
+}
+
+function clearMarkdown(): void {
+  formEl.querySelectorAll(".md-render").forEach(el => {
+    const ta = el.previousElementSibling as HTMLTextAreaElement;
+    if (ta) ta.style.display = "";
+    el.remove();
+  });
+}
+
 function setEditMode(enabled: boolean): void {
   editMode = enabled;
   if (enabled) {
+    clearMarkdown();
     formEl.classList.remove("readonly");
     btnEdit.style.display = "none";
     requestAnimationFrame(() => {
@@ -234,6 +256,7 @@ function setEditMode(enabled: boolean): void {
   } else {
     formEl.classList.add("readonly");
     btnEdit.style.display = "";
+    renderMarkdown();
   }
 }
 

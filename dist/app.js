@@ -201,9 +201,29 @@ function clearForm() {
     addListItem("risk-items", "", scheduleAutoSave);
 }
 // --- Edit mode ---
+function renderMarkdown() {
+    formEl.querySelectorAll("textarea").forEach(ta => {
+        if (!ta.value.trim())
+            return;
+        const overlay = document.createElement("div");
+        overlay.className = "md-render";
+        overlay.innerHTML = marked.parse(ta.value);
+        ta.style.display = "none";
+        ta.insertAdjacentElement("afterend", overlay);
+    });
+}
+function clearMarkdown() {
+    formEl.querySelectorAll(".md-render").forEach(el => {
+        const ta = el.previousElementSibling;
+        if (ta)
+            ta.style.display = "";
+        el.remove();
+    });
+}
 function setEditMode(enabled) {
     editMode = enabled;
     if (enabled) {
+        clearMarkdown();
         formEl.classList.remove("readonly");
         btnEdit.style.display = "none";
         requestAnimationFrame(() => {
@@ -213,6 +233,7 @@ function setEditMode(enabled) {
     else {
         formEl.classList.add("readonly");
         btnEdit.style.display = "";
+        renderMarkdown();
     }
 }
 // --- Auto-save ---
