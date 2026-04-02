@@ -162,6 +162,7 @@ function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
 }
 
 function populateForm(plan: TaskPlan): void {
+  clearMarkdown();
   (document.getElementById("title") as HTMLInputElement).value = plan.title;
   (document.getElementById("ticket") as HTMLInputElement).value = plan.ticket;
   (document.getElementById("date-started") as HTMLInputElement).value = plan.dateStarted;

@@ -138,6 +138,7 @@ function gatherFormData() {
     return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, noteItems, riskItems, images, decisions, actualTime, surprised, differently };
 }
 function populateForm(plan) {
+    clearMarkdown();
     document.getElementById("title").value = plan.title;
     document.getElementById("ticket").value = plan.ticket;
     document.getElementById("date-started").value = plan.dateStarted;
