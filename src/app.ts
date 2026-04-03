@@ -104,6 +104,7 @@ imageDropZone.addEventListener("drop", (e) => {
 
 function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
   const title = (document.getElementById("title") as HTMLInputElement).value;
+  const description = (document.getElementById("description") as HTMLTextAreaElement).value;
   const ticket = (document.getElementById("ticket") as HTMLInputElement).value;
   const dateStarted = (document.getElementById("date-started") as HTMLInputElement).value;
   const contextBucket = (document.getElementById("context-bucket") as HTMLSelectElement).value;
@@ -159,12 +160,14 @@ function gatherFormData(): Omit<TaskPlan, "id" | "createdAt" | "updatedAt"> {
   const differently = (document.getElementById("differently") as HTMLTextAreaElement).value;
   const images = getImages();
 
-  return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, noteItems, riskItems, images, decisions, actualTime, surprised, differently };
+  return { title, description, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, noteItems, riskItems, images, decisions, actualTime, surprised, differently };
 }
 
 function populateForm(plan: TaskPlan): void {
   clearMarkdown();
   (document.getElementById("title") as HTMLInputElement).value = plan.title;
+  const descriptionTA = document.getElementById("description") as HTMLTextAreaElement;
+  descriptionTA.value = plan.description || "";
   (document.getElementById("ticket") as HTMLInputElement).value = plan.ticket;
   (document.getElementById("date-started") as HTMLInputElement).value = plan.dateStarted;
   (document.getElementById("context-bucket") as HTMLSelectElement).value = plan.contextBucket;
@@ -201,11 +204,12 @@ function populateForm(plan: TaskPlan): void {
   actualTimeTA.value = plan.actualTime;
   surprisedTA.value = plan.surprised;
   differentlyTA.value = plan.differently;
-  requestAnimationFrame(() => { autoResize(actualTimeTA); autoResize(surprisedTA); autoResize(differentlyTA); });
+  requestAnimationFrame(() => { autoResize(descriptionTA); autoResize(actualTimeTA); autoResize(surprisedTA); autoResize(differentlyTA); });
 }
 
 function clearForm(): void {
   (document.getElementById("title") as HTMLInputElement).value = "";
+  (document.getElementById("description") as HTMLTextAreaElement).value = "";
   (document.getElementById("ticket") as HTMLInputElement).value = "";
   (document.getElementById("date-started") as HTMLInputElement).value = "";
   (document.getElementById("context-bucket") as HTMLSelectElement).value = "frontend";
@@ -233,6 +237,7 @@ function clearForm(): void {
 
 function renderMarkdown(): void {
   formEl.querySelectorAll<HTMLTextAreaElement>("textarea").forEach(ta => {
+    if (ta.id === "description") return;
     if (!ta.value.trim()) return;
     const overlay = document.createElement("div");
     overlay.className = "md-render";
@@ -393,7 +398,8 @@ importFileInput.addEventListener("change", async () => {
   importFileInput.value = "";
 });
 
-// Wrap-up textareas
+// Auto-resizing textareas
+makeAutoResizing(document.getElementById("description") as HTMLTextAreaElement);
 makeAutoResizing(document.getElementById("actual-time") as HTMLTextAreaElement);
 makeAutoResizing(document.getElementById("surprised") as HTMLTextAreaElement);
 makeAutoResizing(document.getElementById("differently") as HTMLTextAreaElement);

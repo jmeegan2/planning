@@ -90,6 +90,7 @@ imageDropZone.addEventListener("drop", (e) => {
 // --- Form data ---
 function gatherFormData() {
     const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
     const ticket = document.getElementById("ticket").value;
     const dateStarted = document.getElementById("date-started").value;
     const contextBucket = document.getElementById("context-bucket").value;
@@ -136,11 +137,13 @@ function gatherFormData() {
     const surprised = document.getElementById("surprised").value;
     const differently = document.getElementById("differently").value;
     const images = getImages();
-    return { title, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, noteItems, riskItems, images, decisions, actualTime, surprised, differently };
+    return { title, description, ticket, dateStarted, contextBucket, doneItems, knowItems, findOutItems, chunkItems, noteItems, riskItems, images, decisions, actualTime, surprised, differently };
 }
 function populateForm(plan) {
     clearMarkdown();
     document.getElementById("title").value = plan.title;
+    const descriptionTA = document.getElementById("description");
+    descriptionTA.value = plan.description || "";
     document.getElementById("ticket").value = plan.ticket;
     document.getElementById("date-started").value = plan.dateStarted;
     document.getElementById("context-bucket").value = plan.contextBucket;
@@ -181,10 +184,11 @@ function populateForm(plan) {
     actualTimeTA.value = plan.actualTime;
     surprisedTA.value = plan.surprised;
     differentlyTA.value = plan.differently;
-    requestAnimationFrame(() => { autoResize(actualTimeTA); autoResize(surprisedTA); autoResize(differentlyTA); });
+    requestAnimationFrame(() => { autoResize(descriptionTA); autoResize(actualTimeTA); autoResize(surprisedTA); autoResize(differentlyTA); });
 }
 function clearForm() {
     document.getElementById("title").value = "";
+    document.getElementById("description").value = "";
     document.getElementById("ticket").value = "";
     document.getElementById("date-started").value = "";
     document.getElementById("context-bucket").value = "frontend";
@@ -209,6 +213,8 @@ function clearForm() {
 // --- Edit mode ---
 function renderMarkdown() {
     formEl.querySelectorAll("textarea").forEach(ta => {
+        if (ta.id === "description")
+            return;
         if (!ta.value.trim())
             return;
         const overlay = document.createElement("div");
@@ -360,7 +366,8 @@ importFileInput.addEventListener("change", async () => {
     }
     importFileInput.value = "";
 });
-// Wrap-up textareas
+// Auto-resizing textareas
+makeAutoResizing(document.getElementById("description"));
 makeAutoResizing(document.getElementById("actual-time"));
 makeAutoResizing(document.getElementById("surprised"));
 makeAutoResizing(document.getElementById("differently"));

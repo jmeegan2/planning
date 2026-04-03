@@ -18,6 +18,7 @@ export interface DecisionRow {
 export interface TaskPlan {
   id: string;
   title: string;
+  description: string;
   ticket: string;
   dateStarted: string;
   contextBucket: string;
